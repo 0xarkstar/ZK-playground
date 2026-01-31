@@ -1,0 +1,897 @@
+{
+  "common": {
+    "loading": "Loading...",
+    "error": "Error",
+    "confirm": "Confirm",
+    "cancel": "Cancel",
+    "yes": "Yes",
+    "no": "No",
+    "close": "Close",
+    "submit": "Submit",
+    "copy": "Copy",
+    "copied": "Copied",
+    "viewOn": "View on",
+    "learnMore": "Learn More",
+    "votes": "votes",
+    "totalVotes": "Total votes"
+  },
+  "nav": {
+    "education": "Education",
+    "visualization": "Visualization",
+    "demo": "Demo",
+    "snark": "zk-SNARK",
+    "stark": "zk-STARK",
+    "comparison": "Comparison",
+    "circuit": "Circuit",
+    "proofProcess": "Proof Process"
+  },
+  "home": {
+    "badge": "Learn Zero-Knowledge Proofs",
+    "title": "Understand ZK Technology Through",
+    "titleHighlight": "Interactive Experience",
+    "description": "Explore zk-SNARK and zk-STARK concepts, visualize circuit structures, watch proof generation in real-time, and build a real anonymous voting application.",
+    "startLearning": "Start Learning",
+    "tryDemo": "Try Demo",
+    "whatYouWillLearn": "What You Will Learn",
+    "whatYouWillLearnDesc": "From theoretical foundations to practical implementation, explore every aspect of Zero-Knowledge proof technology.",
+    "builtWithModernStack": "Built With Modern Stack",
+    "builtWithModernStackDesc": "Using industry-standard tools for ZK development and Web3 integration.",
+    "readyToExplore": "Ready to Explore ZK Technology?",
+    "readyToExploreDesc": "Start with the education modules to understand the fundamentals, then move to visualization and finally build with the demo.",
+    "beginWithSnark": "Begin with zk-SNARK",
+    "features": {
+      "education": {
+        "title": "Education Modules",
+        "description": "Learn the fundamentals of zk-SNARK and zk-STARK with interactive explanations and comparisons."
+      },
+      "circuitViz": {
+        "title": "Circuit Visualization",
+        "description": "Explore how Circom circuits work with interactive node graphs showing signals, constraints, and templates."
+      },
+      "proofAnimation": {
+        "title": "Proof Animation",
+        "description": "Watch the proof generation and verification process step by step with detailed animations."
+      },
+      "votingDemo": {
+        "title": "Secret Voting Demo",
+        "description": "Experience a real ZK application: anonymous voting on Base Sepolia with Groth16 proofs."
+      }
+    },
+    "concepts": {
+      "zeroKnowledge": {
+        "title": "Zero-Knowledge",
+        "description": "Prove knowledge without revealing it"
+      },
+      "succinctness": {
+        "title": "Succinctness",
+        "description": "Tiny proofs, fast verification"
+      },
+      "privacy": {
+        "title": "Privacy",
+        "description": "Keep sensitive data hidden"
+      }
+    },
+    "techStack": {
+      "circom": "Circuit Language",
+      "snarkjs": "Proof Generation",
+      "circomlib": "Circuit Library",
+      "groth16": "Proving System",
+      "nextjs": "React Framework",
+      "wagmi": "Web3 Hooks",
+      "reactFlow": "Visualization",
+      "baseSepolia": "Test Network"
+    },
+    "footer": {
+      "builtForLearning": "Built for learning ZK technology. Open source on",
+      "github": "GitHub"
+    }
+  },
+  "demo": {
+    "voting": {
+      "badge": "Live Demo - Base Sepolia",
+      "title": "Secret Voting Demo",
+      "description": "Deploy contracts, register voters, and cast anonymous votes on Base Sepolia",
+      "realBlockchainAlert": {
+        "title": "Real Blockchain Demo",
+        "description": "This demo deploys real contracts to Base Sepolia. You need testnet ETH from"
+      },
+      "walletConnection": "Wallet Connection",
+      "tabs": {
+        "vote": "Vote",
+        "howItWorks": "How It Works"
+      },
+      "adminControls": {
+        "title": "Admin Controls",
+        "owner": "Owner",
+        "votingStatus": "Voting Status",
+        "votingActive": "Voting is active",
+        "votingNotActive": "Voting is not active",
+        "active": "Active",
+        "inactive": "Inactive",
+        "startVoting": "Start Voting",
+        "endVoting": "End Voting",
+        "registerVoterFirst": "Register at least one voter before starting the vote."
+      },
+      "progress": {
+        "title": "Progress",
+        "deployContracts": "Deploy Contracts",
+        "registerIdentity": "Register Identity",
+        "startVoting": "Start Voting",
+        "generateProof": "Generate Proof",
+        "submitVote": "Submit Vote",
+        "complete": "Complete"
+      },
+      "results": {
+        "title": "Live Results"
+      },
+      "contractInfo": {
+        "title": "Contract Info",
+        "network": "Network",
+        "verifier": "Verifier",
+        "votingContract": "Voting Contract",
+        "registeredVoters": "Registered Voters",
+        "notDeployed": "Not deployed",
+        "viewOnBasescan": "View on Basescan"
+      },
+      "howItWorks": {
+        "title": "How Anonymous Voting Works",
+        "privacyProblem": {
+          "title": "The Privacy Problem",
+          "description": "On a public blockchain, all transactions are visible. If you vote directly, everyone can see who voted for what. This undermines the secret ballot principle."
+        },
+        "zkSolution": {
+          "title": "The ZK Solution",
+          "description": "Zero-knowledge proofs let you prove you are eligible to vote and that your vote is valid, without revealing your identity. The contract only sees a valid proof, not who created it."
+        },
+        "steps": {
+          "title": "Step-by-Step Process",
+          "step1": {
+            "title": "Deploy Contracts",
+            "description": "Deploy the ZK verifier and voting contract to Base Sepolia."
+          },
+          "step2": {
+            "title": "Register Voters",
+            "description": "Generate identity secrets and register commitments on-chain."
+          },
+          "step3": {
+            "title": "Start Voting",
+            "description": "Admin computes Merkle root and starts the voting period."
+          },
+          "step4": {
+            "title": "Generate Proof",
+            "description": "Create a ZK proof showing you know a secret in the Merkle tree."
+          },
+          "step5": {
+            "title": "Cast Vote",
+            "description": "Submit proof + nullifier + vote. Contract verifies and records."
+          }
+        }
+      }
+    },
+    "votingPanel": {
+      "title": "Cast Your Vote",
+      "voteRecorded": "Your vote has been recorded!",
+      "voteSuccess": "Your anonymous vote has been successfully submitted and verified on-chain. No one can link this vote back to your identity.",
+      "viewTransaction": "View transaction on Basescan",
+      "question": "Question: Should we implement this proposal?",
+      "yourSelection": "Your selection",
+      "submitting": "Submitting to Blockchain...",
+      "submitVote": "Submit Vote to Blockchain"
+    },
+    "proofGenerator": {
+      "title": "ZK Proof Generation",
+      "registerFirst": "Register as a voter first",
+      "selectVoteFirst": "Select your vote first to generate a proof",
+      "proofGenerated": "Proof generated successfully!",
+      "yourVote": "Your vote",
+      "nullifier": "Nullifier",
+      "hideDetails": "Hide Proof Details",
+      "showDetails": "Show Proof Details",
+      "proofData": "Proof Data (Groth16)",
+      "selectedVote": "Selected vote",
+      "proofDescription": "The proof will prove your vote is valid without revealing your identity.",
+      "generating": "Generating...",
+      "estimatedTime": "Real ZK proof generation using WebAssembly. This may take 10-30 seconds.",
+      "generateButton": "Generate ZK Proof",
+      "steps": {
+        "buildingTree": "Building Merkle tree...",
+        "generatingMerkle": "Generating Merkle proof...",
+        "computingNullifier": "Computing nullifier hash...",
+        "preparingInputs": "Preparing circuit inputs...",
+        "generatingProof": "Generating ZK proof (this may take a while)...",
+        "formattingProof": "Formatting proof for contract...",
+        "complete": "Proof generated!"
+      }
+    },
+    "contractDeployer": {
+      "title": "Contract Deployment",
+      "deployed": "Contracts deployed successfully!",
+      "ownerNote": "You are the owner of these contracts and can register voters and start voting.",
+      "description": "Deploy your own ZK voting contracts to Base Sepolia. This will deploy:",
+      "groth16Verifier": "Groth16Verifier",
+      "groth16Desc": "Verifies ZK proofs on-chain",
+      "secretVoting": "SecretVoting",
+      "secretVotingDesc": "Manages voter registration and voting",
+      "deployButton": "Deploy Contracts",
+      "confirmInWallet": "Please confirm transactions in your wallet.",
+      "requiresEth": "Requires Base Sepolia ETH",
+      "getFreeEth": "Get free testnet ETH from",
+      "steps": {
+        "deployingVerifier": "Deploying Groth16Verifier contract...",
+        "waitingVerifier": "Waiting for Verifier deployment confirmation...",
+        "deployingVoting": "Deploying SecretVoting contract...",
+        "waitingVoting": "Waiting for SecretVoting deployment confirmation...",
+        "complete": "Deployment complete!"
+      }
+    },
+    "voterRegistration": {
+      "title": "Voter Registration",
+      "deployFirst": "Deploy contracts first to register voters",
+      "registered": "You are registered to vote!",
+      "identitySecret": "Identity Secret",
+      "identityCommitment": "Identity Commitment",
+      "merkleLeafIndex": "Merkle Leaf Index",
+      "keepSecretSafe": "Keep your secret safe!",
+      "keepSecretSafeDesc": "You will need it to generate your voting proof. Anyone with this secret can vote on your behalf.",
+      "description": "Register as a voter to participate in the secret ballot. This will generate a unique identity and register it on-chain.",
+      "generateButton": "Generate Identity & Register",
+      "createsItems": {
+        "title": "Registration creates:",
+        "secret": "A random identity secret (private)",
+        "commitment": "A Poseidon hash commitment (on-chain)",
+        "position": "Your position in the Merkle tree"
+      },
+      "steps": {
+        "generatingSecret": "Generating random secret...",
+        "computingCommitment": "Computing identity commitment (Poseidon hash)...",
+        "gettingCount": "Getting current voter count...",
+        "registering": "Registering voter on-chain...",
+        "waitingConfirmation": "Waiting for transaction confirmation...",
+        "complete": "Registration complete!"
+      }
+    },
+    "walletBalance": {
+      "balance": "Balance",
+      "insufficientBalance": "Insufficient Balance",
+      "needEth": "You need Base Sepolia ETH for transactions.",
+      "getTestnetEth": "Get Testnet ETH"
+    },
+    "confirmDialog": {
+      "title": "Confirm Your Vote",
+      "description": "Please review your vote before submitting.",
+      "yourVote": "Your Vote",
+      "warning": "This action cannot be undone. Once submitted, your vote is final and cannot be changed.",
+      "cancel": "Cancel",
+      "confirmSubmit": "Confirm & Submit"
+    },
+    "errorDisplay": {
+      "title": "Error Occurred",
+      "retry": "Retry",
+      "showDetails": "Show Technical Details",
+      "hideDetails": "Hide Technical Details",
+      "errors": {
+        "insufficientFunds": {
+          "title": "Insufficient Funds",
+          "description": "Your wallet doesn't have enough ETH for this transaction.",
+          "action": "Get testnet ETH from the faucet"
+        },
+        "userRejected": {
+          "title": "Transaction Rejected",
+          "description": "You rejected the transaction in your wallet.",
+          "action": "Please approve the transaction when prompted"
+        },
+        "network": {
+          "title": "Network Error",
+          "description": "Unable to connect to the network.",
+          "action": "Check your internet connection and try again"
+        },
+        "unknown": {
+          "title": "Something Went Wrong",
+          "description": "An unexpected error occurred.",
+          "action": "Please try again"
+        }
+      }
+    }
+  },
+  "education": {
+    "module": "Education Module",
+    "snark": {
+      "title": "zk-SNARK",
+      "subtitle": "Zero-Knowledge Succinct Non-interactive Argument of Knowledge",
+      "tabs": {
+        "overview": "Overview",
+        "howItWorks": "How It Works",
+        "trustedSetup": "Trusted Setup",
+        "tryIt": "Try It"
+      },
+      "overview": {
+        "whatIs": "What is zk-SNARK?",
+        "description": "zk-SNARK stands for Zero-Knowledge Succinct Non-interactive Argument of Knowledge. It is a cryptographic proof system that allows one party (the prover) to prove to another party (the verifier) that they know a value x, without conveying any information apart from the fact that they know the value x.",
+        "properties": {
+          "zeroKnowledge": {
+            "title": "Zero-Knowledge",
+            "description": "The verifier learns nothing except that the statement is true. Your secret remains completely hidden."
+          },
+          "succinct": {
+            "title": "Succinct",
+            "description": "Proofs are tiny (just a few hundred bytes) and verification is extremely fast, regardless of computation size."
+          },
+          "nonInteractive": {
+            "title": "Non-interactive",
+            "description": "The prover sends a single message. No back-and-forth communication required between prover and verifier."
+          },
+          "argumentOfKnowledge": {
+            "title": "Argument of Knowledge",
+            "description": "The prover must actually know the secret (witness) to generate a valid proof."
+          }
+        },
+        "advantages": {
+          "title": "Advantages",
+          "description": "Key benefits of using zk-SNARKs",
+          "items": [
+            "Very small proof size (~200-300 bytes)",
+            "Constant verification time (few milliseconds)",
+            "Mature ecosystem with many tools",
+            "Battle-tested in production (Zcash, etc.)"
+          ]
+        },
+        "limitations": {
+          "title": "Limitations",
+          "description": "Important considerations",
+          "items": [
+            "Requires trusted setup ceremony",
+            "Not quantum-resistant",
+            "Proof generation can be slow",
+            "Circuit-specific setup needed"
+          ]
+        }
+      },
+      "howItWorks": {
+        "title": "From Program to Proof",
+        "description": "zk-SNARKs work by converting your computation into a mathematical form that can be proven and verified. Here is the transformation pipeline:",
+        "steps": {
+          "circuit": {
+            "title": "Arithmetic Circuit",
+            "description": "Your computation is expressed as a circuit with gates that perform addition and multiplication.",
+            "details": [
+              "Each gate has input wires and output wires",
+              "Signals flow through the circuit",
+              "Constraints define valid relationships"
+            ]
+          },
+          "r1cs": {
+            "title": "R1CS (Rank-1 Constraint System)",
+            "description": "The circuit is flattened into a system of equations in the form A * B = C.",
+            "details": [
+              "Each constraint is a simple multiplication",
+              "Variables include public and private inputs",
+              "All constraints must be satisfied simultaneously"
+            ]
+          },
+          "qap": {
+            "title": "QAP (Quadratic Arithmetic Program)",
+            "description": "R1CS is transformed into polynomials, enabling efficient verification.",
+            "details": [
+              "Each constraint becomes polynomial equations",
+              "Polynomial interpolation is used",
+              "Enables succinct checking via evaluation"
+            ]
+          },
+          "proof": {
+            "title": "Proof Generation",
+            "description": "The prover uses elliptic curve cryptography to create a compact proof.",
+            "details": [
+              "Prover knows the witness (secret values)",
+              "Cryptographic commitment to polynomials",
+              "Pairing-based verification enabled"
+            ]
+          }
+        },
+        "example": {
+          "title": "Example: Proving x*x = 9",
+          "circuit": "Circuit:",
+          "r1cs": "R1CS Constraint:",
+          "whatGetsProven": "What gets proven:"
+        }
+      },
+      "trustedSetup": {
+        "title": "The Trusted Setup Ceremony",
+        "description": "zk-SNARKs require a one-time trusted setup phase that generates the proving and verification keys. This is both a strength and a potential vulnerability.",
+        "whatHappens": {
+          "title": "What Happens",
+          "items": [
+            "Random secret values are generated",
+            "Keys are derived from these secrets",
+            "The secrets must be destroyed",
+            "Resulting keys are used forever"
+          ]
+        },
+        "toxicWaste": {
+          "title": "The Risk: Toxic Waste",
+          "items": [
+            "If secrets are kept, fake proofs possible",
+            "Called \"toxic waste\" for this reason",
+            "Multi-party ceremonies reduce risk",
+            "Only ONE honest participant needed"
+          ]
+        },
+        "powersOfTau": {
+          "title": "Powers of Tau Ceremony",
+          "description": "The most famous trusted setup is the \"Powers of Tau\" ceremony, used by many ZK projects:",
+          "phase1": {
+            "title": "Phase 1: Universal Setup",
+            "description": "Many participants contribute randomness sequentially. Each participant adds their own random value."
+          },
+          "secureDestruction": {
+            "title": "Secure Destruction",
+            "description": "Each participant must destroy their random value after contribution. Various creative destruction methods used."
+          },
+          "phase2": {
+            "title": "Phase 2: Circuit-Specific",
+            "description": "Additional ceremony for each specific circuit. Smaller and faster than Phase 1."
+          },
+          "securityGuarantee": {
+            "title": "Security Guarantee",
+            "description": "As long as at least ONE participant honestly destroyed their random value, the entire ceremony is secure. With hundreds or thousands of participants, this is extremely likely."
+          }
+        }
+      },
+      "tryIt": {
+        "title": "Interactive zk-SNARK Demo",
+        "whatJustHappened": "What Just Happened?",
+        "description": "In this simple demo, you proved knowledge of a number whose square equals the public value. In a real zk-SNARK:",
+        "realFeatures": [
+          "The proof would be cryptographically secure, not just a simulation",
+          "The verifier would learn nothing about your secret value",
+          "Verification would take only milliseconds regardless of computation complexity",
+          "The proof would be only ~200 bytes, verifiable by a smart contract"
+        ]
+      }
+    },
+    "interactive": {
+      "startPrompt": "Click \"Start\" to begin the interactive demo",
+      "complete": "Demo Complete!",
+      "completeDesc": "You have seen all the steps in this process.",
+      "step": "Step",
+      "buttons": {
+        "next": "Next",
+        "start": "Start"
+      },
+      "simpleProof": {
+        "title": "Simple Proof Demo",
+        "description": "Prove you know a secret number whose square equals the public value.",
+        "secretLabel": "Secret (private)",
+        "secretHint": "Only you know this",
+        "publicLabel": "Public Value",
+        "publicHint": "Everyone sees this",
+        "claim": "Claim",
+        "claimTemplate": "I know x such that x × x = {value}",
+        "generateVerify": "Generate & Verify Proof",
+        "verifying": "Verifying...",
+        "proofVerified": "Proof verified! You know the secret.",
+        "proofFailed": "Proof failed! The secret is incorrect."
+      }
+    },
+    "stark": {
+      "title": "zk-STARK",
+      "subtitle": "Zero-Knowledge Scalable Transparent Argument of Knowledge",
+      "tabs": {
+        "overview": "Overview",
+        "howItWorks": "How It Works",
+        "transparency": "Transparency",
+        "applications": "Applications"
+      },
+      "overview": {
+        "whatIs": "What is zk-STARK?",
+        "description": "zk-STARK stands for Zero-Knowledge Scalable Transparent Argument of Knowledge. Developed by StarkWare, STARKs are a newer proof system that addresses some limitations of SNARKs, particularly the need for trusted setup.",
+        "properties": {
+          "scalable": {
+            "title": "Scalable",
+            "description": "Proof generation time grows quasi-linearly with computation size, making it efficient for very large computations."
+          },
+          "transparent": {
+            "title": "Transparent",
+            "description": "No trusted setup required. All randomness comes from public data using hash functions."
+          },
+          "quantumResistant": {
+            "title": "Quantum Resistant",
+            "description": "Based on hash functions, not elliptic curves. Secure against future quantum computers."
+          },
+          "minimalAssumptions": {
+            "title": "Minimal Assumptions",
+            "description": "Security relies only on collision-resistant hash functions, a well-studied cryptographic primitive."
+          }
+        },
+        "advantages": {
+          "title": "Advantages",
+          "description": "Key benefits of using zk-STARKs",
+          "items": [
+            "No trusted setup needed (transparent)",
+            "Quantum-resistant security",
+            "Fast prover for large computations",
+            "Simpler security assumptions"
+          ]
+        },
+        "tradeoffs": {
+          "title": "Trade-offs",
+          "description": "Important considerations",
+          "items": [
+            "Larger proof size (tens to hundreds of KB)",
+            "Slower verification than SNARKs",
+            "Less mature ecosystem",
+            "More complex implementation"
+          ]
+        }
+      },
+      "howItWorks": {
+        "title": "The STARK Pipeline",
+        "description": "STARKs use a fundamentally different approach than SNARKs, based on polynomials and hash functions rather than elliptic curves.",
+        "steps": {
+          "air": {
+            "title": "AIR (Algebraic Intermediate Representation)",
+            "description": "Computation is expressed as algebraic constraints over an execution trace.",
+            "details": [
+              "Trace is a table of values at each step",
+              "Constraints relate values across rows",
+              "Similar to a spreadsheet with formulas"
+            ]
+          },
+          "polynomial": {
+            "title": "Polynomial Commitment",
+            "description": "The execution trace is encoded as polynomials using Reed-Solomon encoding.",
+            "details": [
+              "Each column becomes a polynomial",
+              "Polynomials are evaluated on a larger domain",
+              "Error-correcting code properties used"
+            ]
+          },
+          "fri": {
+            "title": "FRI Protocol (Fast Reed-Solomon IOP)",
+            "description": "A clever protocol to prove that committed values are actually low-degree polynomials.",
+            "details": [
+              "Recursively reduces polynomial degree",
+              "Uses random challenges from hash of transcript",
+              "Achieves logarithmic proof size"
+            ]
+          },
+          "fiatShamir": {
+            "title": "Fiat-Shamir Transform",
+            "description": "Converts interactive proof to non-interactive using hash functions.",
+            "details": [
+              "Hash function generates random challenges",
+              "Transcript includes all prior messages",
+              "Publicly verifiable without interaction"
+            ]
+          }
+        },
+        "example": {
+          "title": "AIR Example: Fibonacci",
+          "description": "To prove knowledge of the 100th Fibonacci number:",
+          "executionTrace": "Execution Trace:",
+          "constraints": "Constraints:"
+        }
+      },
+      "transparency": {
+        "title": "Transparent Setup",
+        "description": "One of the most significant advantages of STARKs is that they require no trusted setup. All the randomness used in the protocol is derived publicly.",
+        "howItWorks": {
+          "title": "How Transparency Works",
+          "items": [
+            "Randomness from hash of transcript",
+            "Anyone can verify the derivation",
+            "No secrets to destroy",
+            "No trust assumptions"
+          ]
+        },
+        "comparisonToSnarks": {
+          "title": "Comparison to SNARKs",
+          "items": [
+            "SNARKs need trusted ceremony",
+            "Ceremony must be done per circuit",
+            "\"Toxic waste\" must be destroyed",
+            "Trust in participants required"
+          ]
+        },
+        "postQuantum": {
+          "title": "Post-Quantum Security",
+          "description": "STARKs are considered quantum-resistant because they rely only on hash functions, not elliptic curve cryptography.",
+          "starkBasis": {
+            "title": "STARK Security Basis",
+            "items": [
+              "Collision-resistant hash functions",
+              "Information-theoretic soundness",
+              "No number-theoretic assumptions"
+            ]
+          },
+          "snarkVulnerability": {
+            "title": "SNARK Vulnerability",
+            "items": [
+              "Discrete log problem (breakable by quantum)",
+              "Elliptic curve pairings",
+              "Shor's algorithm threat"
+            ]
+          },
+          "futureProofing": {
+            "title": "Future-Proofing",
+            "description": "While quantum computers capable of breaking elliptic curve cryptography do not exist yet, many organizations are already planning for post-quantum security. STARKs provide this security today."
+          }
+        }
+      },
+      "applications": {
+        "title": "Real-World STARK Applications",
+        "description": "STARKs are being used in production by several major projects, particularly in the blockchain scaling space.",
+        "projects": {
+          "starknet": {
+            "title": "StarkNet",
+            "description": "A decentralized Layer 2 network powered by STARKs",
+            "features": [
+              "General-purpose smart contracts",
+              "Cairo programming language",
+              "Validity rollup architecture"
+            ]
+          },
+          "starkex": {
+            "title": "StarkEx",
+            "description": "Application-specific STARK scaling engine",
+            "features": [
+              "Powers major DeFi applications",
+              "NFT minting at scale",
+              "Self-custodial trading"
+            ]
+          },
+          "miden": {
+            "title": "Polygon Miden",
+            "description": "STARK-based zk-rollup with client-side proving",
+            "features": [
+              "Private transactions",
+              "Account-based model",
+              "Recursive proofs"
+            ]
+          },
+          "riscZero": {
+            "title": "RISC Zero",
+            "description": "General-purpose zkVM using STARKs",
+            "features": [
+              "Prove any computation",
+              "Standard RISC-V programs",
+              "Rust, C++, Go support"
+            ]
+          }
+        },
+        "whenToUse": {
+          "title": "When to Use STARKs vs SNARKs",
+          "starks": {
+            "title": "Choose STARKs When:",
+            "items": [
+              "Transparency is critical",
+              "Quantum resistance needed",
+              "Very large computations",
+              "Proof size is not a constraint"
+            ]
+          },
+          "snarks": {
+            "title": "Choose SNARKs When:",
+            "items": [
+              "Proof size matters (on-chain)",
+              "Fast verification needed",
+              "Existing tooling preferred",
+              "Trusted setup is acceptable"
+            ]
+          }
+        }
+      }
+    },
+    "comparison": {
+      "title": "SNARK vs STARK",
+      "subtitle": "A comprehensive comparison of the two major zero-knowledge proof systems",
+      "quickOverview": "Quick Overview",
+      "snarkDesc": "Zero-Knowledge Succinct Non-interactive Argument of Knowledge",
+      "starkDesc": "Zero-Knowledge Scalable Transparent Argument of Knowledge",
+      "features": {
+        "tinyProof": "Tiny proof size (~200 bytes)",
+        "fastVerification": "Fast verification (~10ms)",
+        "matureEcosystem": "Mature ecosystem",
+        "trustedSetup": "Requires trusted setup",
+        "notQuantumResistant": "Not quantum-resistant",
+        "noTrustedSetup": "No trusted setup (transparent)",
+        "quantumResistant": "Quantum-resistant",
+        "scalesBetter": "Scales better for large computations",
+        "largerProof": "Larger proof size (~45-200 KB)",
+        "slowerVerification": "Slower verification"
+      },
+      "useCases": {
+        "title": "Use Case Recommendations",
+        "bestForSnarks": "Best for SNARKs",
+        "bestForStarks": "Best for STARKs",
+        "snarks": {
+          "onChain": {
+            "title": "On-chain verification",
+            "description": "When gas costs matter, smaller proofs save money"
+          },
+          "privacy": {
+            "title": "Privacy applications",
+            "description": "Zcash, Tornado Cash, privacy-preserving DeFi"
+          },
+          "identity": {
+            "title": "Identity systems",
+            "description": "Where proof size and verification speed are critical"
+          },
+          "tooling": {
+            "title": "Existing tooling",
+            "description": "Projects that need mature libraries (Circom, snarkjs)"
+          }
+        },
+        "starks": {
+          "l2": {
+            "title": "L2 Scaling solutions",
+            "description": "StarkNet, StarkEx, validity rollups"
+          },
+          "large": {
+            "title": "Large computations",
+            "description": "When proving millions of operations"
+          },
+          "longTerm": {
+            "title": "Long-term security",
+            "description": "Projects concerned about quantum computing"
+          },
+          "noTrust": {
+            "title": "No trust requirements",
+            "description": "When eliminating trusted setup is essential"
+          }
+        }
+      },
+      "future": {
+        "title": "The Future: Hybrid Approaches",
+        "description": "The ZK space is rapidly evolving, and the distinction between SNARKs and STARKs is becoming less clear-cut. Several promising developments:",
+        "starkSnarkWrapping": {
+          "title": "STARK + SNARK Wrapping",
+          "description": "Use STARKs for proving, then wrap in a SNARK for cheap on-chain verification. Best of both worlds."
+        },
+        "universalSnarks": {
+          "title": "Universal SNARKs",
+          "description": "Systems like PLONK require only a single trusted setup for all circuits, reducing the setup burden."
+        },
+        "recursiveProofs": {
+          "title": "Recursive Proofs",
+          "description": "Both systems can recursively verify proofs, enabling infinite computation scaling."
+        },
+        "bottomLine": {
+          "title": "Bottom Line",
+          "description": "Both SNARKs and STARKs are powerful tools. The choice depends on your specific requirements around proof size, verification cost, setup requirements, and security assumptions. Many production systems use both."
+        }
+      }
+    }
+  },
+  "visualization": {
+    "module": "Visualization Module",
+    "circuit": {
+      "title": "Circuit Visualization",
+      "description": "Explore how Circom circuits are structured with signals, constraints, and templates",
+      "interactiveGraph": "Interactive Circuit Graph",
+      "graphDescription": "Select a circuit from the dropdown to visualize its structure. Click on nodes to see details. Drag to pan, scroll to zoom.",
+      "understandingSignals": "Understanding Signals",
+      "signalsDescription": "Signals are the variables in a Circom circuit. They carry values through the computation.",
+      "inputSignals": "Input Signals",
+      "inputSignalsDesc": "Values provided by the prover. Can be public (visible to verifier) or private (hidden).",
+      "outputSignals": "Output Signals",
+      "outputSignalsDesc": "Computed values that become public. The verifier sees these.",
+      "intermediateSignals": "Intermediate Signals",
+      "intermediateSignalsDesc": "Internal values used during computation. Not directly visible.",
+      "constraintsTemplates": "Constraints & Templates",
+      "constraintsTemplatesDesc": "Constraints define the rules that signals must satisfy. Templates are reusable circuit components.",
+      "constraints": "Constraints",
+      "constraintsDesc": "Equations that must be satisfied. Form: A * B + C = 0. The prover must find values that satisfy all constraints.",
+      "templates": "Templates",
+      "templatesDesc": "Reusable circuit components like Poseidon hash or Merkle tree checkers. Compose to build complex circuits.",
+      "codeExamples": "Circom Code Examples",
+      "multiplier": "Multiplier",
+      "binaryCheck": "Binary Check",
+      "usingTemplate": "Using Template",
+      "circuitSelect": {
+        "placeholder": "Select circuit"
+      },
+      "legend": {
+        "title": "Legend",
+        "inputSignal": "Input Signal",
+        "outputSignal": "Output Signal",
+        "intermediateSignal": "Intermediate Signal",
+        "constraint": "Constraint",
+        "templateComponent": "Template/Component"
+      },
+      "nodeInfo": {
+        "selectedNode": "Selected Node",
+        "visibility": "Visibility"
+      }
+    },
+    "proof": {
+      "title": "Proof Process Visualization",
+      "description": "Watch how zero-knowledge proofs are generated and verified step by step",
+      "proofFlow": "The Proof Flow",
+      "inputs": "Inputs",
+      "publicPrivate": "Public + Private",
+      "zkProof": "ZK Proof",
+      "cryptographicMagic": "Cryptographic Magic",
+      "output": "Output",
+      "proofPublicSignals": "Proof + Public Signals",
+      "whatGetsRevealed": "What Gets Revealed?",
+      "visibleToVerifier": "Visible to Verifier",
+      "visibleItems": {
+        "publicInputs": "Public input signals",
+        "proofItself": "The proof itself (~200 bytes)",
+        "verificationResult": "Verification result (true/false)"
+      },
+      "hiddenFromVerifier": "Hidden from Verifier",
+      "hiddenItems": {
+        "privateInputs": "Private input signals (witness)",
+        "intermediateValues": "Intermediate computation values",
+        "secrets": "Any secrets used in the proof"
+      },
+      "proofComponents": "Proof Components",
+      "piA": "pi_a (G1 Point)",
+      "piADesc": "First element of the Groth16 proof. An elliptic curve point in G1.",
+      "piB": "pi_b (G2 Point)",
+      "piBDesc": "Second element. An elliptic curve point in G2 (larger).",
+      "piC": "pi_c (G1 Point)",
+      "piCDesc": "Third element. Another G1 point completing the proof.",
+      "verificationEquation": "Verification Equation",
+      "verificationDescription": "Groth16 verification checks a pairing equation:",
+      "verificationExplanation": "If this equation holds, the proof is valid. The verifier is convinced the prover knows the witness without seeing it.",
+      "tryItYourself": "Try It Yourself",
+      "pipelineTitle": "Proof Generation Pipeline",
+      "steps": {
+        "input": {
+          "name": "Load Inputs",
+          "description": "Load circuit inputs (public and private)"
+        },
+        "witness": {
+          "name": "Compute Witness",
+          "description": "Execute circuit to compute all intermediate values"
+        },
+        "proof": {
+          "name": "Generate Proof",
+          "description": "Create cryptographic proof using witness and proving key"
+        },
+        "verify": {
+          "name": "Verify Proof",
+          "description": "Verify the proof against public inputs"
+        }
+      },
+      "status": {
+        "complete": "Complete",
+        "inProgress": "In Progress"
+      },
+      "buttons": {
+        "pause": "Pause",
+        "restart": "Restart",
+        "resume": "Resume",
+        "start": "Start"
+      },
+      "proofVerified": {
+        "title": "Proof Verified Successfully!",
+        "description": "The zero-knowledge proof has been generated and verified. The verifier is convinced of the statement without learning the secret."
+      }
+    },
+    "comparison": {
+      "chartTitle": "SNARK vs STARK Comparison",
+      "barChart": "Bar Chart",
+      "radarChart": "Radar (Coming)",
+      "loadingChart": "Loading chart...",
+      "chartNote": "Note: Values are shown on a logarithmic scale for better visualization of the differences. Boolean values (Setup Required, Quantum Safe) are shown as Yes/No.",
+      "detailedComparison": "Detailed Feature Comparison",
+      "tableHeaders": {
+        "aspect": "Aspect",
+        "snark": "zk-SNARK",
+        "stark": "zk-STARK"
+      }
+    }
+  },
+  "languageSwitcher": {
+    "label": "Language",
+    "en": "English",
+    "ko": "한국어"
+  },
+  "footer": {
+    "builtFor": "Built for learning ZK technology. Open source on",
+    "github": "GitHub"
+  }
+}
