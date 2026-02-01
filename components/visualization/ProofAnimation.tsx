@@ -120,6 +120,7 @@ export function ProofAnimation() {
   };
 
   const getStepStatus = (index: number) => {
+    if (isComplete) return "complete";
     if (index < currentStep) return "complete";
     if (index === currentStep) return "active";
     return "pending";

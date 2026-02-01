@@ -95,7 +95,7 @@ export function InteractiveDemo({
             <div
               key={step.id}
               className={`h-2 flex-1 rounded-full transition-colors ${
-                i < currentStep
+                completed || i < currentStep
                   ? "bg-green-500"
                   : i === currentStep && isPlaying
                   ? "bg-primary"
