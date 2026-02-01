@@ -51,9 +51,11 @@ export function VoterRegistration({
   const [copied, setCopied] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  const tErrors = useTranslations("demo.errors");
+
   const handleRegister = async () => {
     if (!walletClient || !publicClient || !votingContract) {
-      setError("Wallet not connected or contract not deployed");
+      setError(tErrors("walletOrContractNotReady"));
       return;
     }
 

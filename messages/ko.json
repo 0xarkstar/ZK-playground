@@ -893,5 +893,82 @@
   "footer": {
     "builtFor": "ZK 기술 학습을 위해 제작되었습니다. 오픈 소스:",
     "github": "GitHub"
+  },
+  "visualization.proofStats": {
+    "proofSize": "증명 크기 (바이트)",
+    "verificationTime": "검증 시간",
+    "proofGeneration": "증명 생성",
+    "publicSignals": "공개 신호"
+  },
+  "visualization.circuits": {
+    "multiplier": {
+      "name": "곱셈기",
+      "description": "간단한 a * b = c 회로"
+    },
+    "rangeCheck": {
+      "name": "범위 검사",
+      "description": "값이 0과 2^n - 1 사이인지 확인"
+    },
+    "voting": {
+      "name": "비밀 투표",
+      "description": "Merkle 증명을 사용한 익명 투표"
+    }
+  },
+  "visualization.circuitNodes": {
+    "decomposeToBits": "비트로 분해",
+    "binaryCheck": "이진 검사",
+    "hashIdentity": "신원 해시",
+    "verifyMembership": "멤버십 확인",
+    "nullifierHash": "널리파이어 해시",
+    "binaryVote": "이진 투표"
+  },
+  "visualization.comparisonCategories": {
+    "proofSize": "증명 크기",
+    "verificationTime": "검증 시간",
+    "proverTime": "증명자 시간",
+    "setupRequired": "설정 필요",
+    "quantumSafe": "양자 안전"
+  },
+  "visualization.comparisonTable": {
+    "proofSize": {
+      "aspect": "증명 크기",
+      "snark": "~200-300 바이트",
+      "stark": "~45-200 KB",
+      "description": "SNARK는 훨씬 작은 증명을 생성하며, 온체인 검증 비용에 중요합니다."
+    },
+    "verificationTime": {
+      "aspect": "검증 시간",
+      "snark": "~10 ms",
+      "stark": "~100 ms",
+      "description": "SNARK 검증이 더 빠르지만, 두 시스템 모두 대부분의 응용에 실용적입니다."
+    },
+    "proverTime": {
+      "aspect": "증명자 시간",
+      "snark": "대규모 계산에서 더 느림",
+      "stark": "대규모 계산에서 더 빠름",
+      "description": "STARK는 준선형 복잡도로 인해 계산 크기에 따라 더 잘 확장됩니다."
+    },
+    "trustedSetup": {
+      "aspect": "신뢰 설정",
+      "snark": "필요 (회로당)",
+      "stark": "불필요 (투명)",
+      "description": "STARK는 신뢰 세레모니의 필요성을 완전히 제거합니다."
+    },
+    "quantumResistance": {
+      "aspect": "양자 저항",
+      "snark": "아니오 (ECC 기반)",
+      "stark": "예 (해시 기반)",
+      "description": "STARK는 양자 컴퓨터에 대해 안전합니다; SNARK는 그렇지 않습니다."
+    },
+    "ecosystemMaturity": {
+      "aspect": "생태계 성숙도",
+      "snark": "더 성숙함",
+      "stark": "빠르게 성장 중",
+      "description": "SNARK는 더 오래되어 더 많은 도구와 문서가 있습니다."
+    }
+  },
+  "demo.errors": {
+    "walletNotConnected": "지갑이 연결되지 않음",
+    "walletOrContractNotReady": "지갑이 연결되지 않았거나 컨트랙트가 배포되지 않음"
   }
 }

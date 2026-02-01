@@ -194,7 +194,12 @@ export function SimpleProofDemo({ title }: SimpleProofDemoProps) {
             <input
               type="number"
               value={secret}
-              onChange={(e) => setSecret(parseInt(e.target.value) || 0)}
+              onChange={(e) => {
+                const val = parseInt(e.target.value) || 0;
+                setSecret(Math.min(Math.max(val, -1000000), 1000000));
+              }}
+              min={-1000000}
+              max={1000000}
               className="w-full mt-1 p-2 border rounded-md bg-background"
             />
             <p className="text-xs text-muted-foreground mt-1">
@@ -206,7 +211,12 @@ export function SimpleProofDemo({ title }: SimpleProofDemoProps) {
             <input
               type="number"
               value={publicValue}
-              onChange={(e) => setPublicValue(parseInt(e.target.value) || 0)}
+              onChange={(e) => {
+                const val = parseInt(e.target.value) || 0;
+                setPublicValue(Math.min(Math.max(val, 0), 1000000000000));
+              }}
+              min={0}
+              max={1000000000000}
               className="w-full mt-1 p-2 border rounded-md bg-background"
             />
             <p className="text-xs text-muted-foreground mt-1">

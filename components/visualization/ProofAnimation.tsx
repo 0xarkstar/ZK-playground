@@ -271,30 +271,32 @@ export function ProofAnimation() {
 }
 
 export function ProofStats() {
+  const t = useTranslations("visualization.proofStats");
+
   return (
     <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
       <Card>
         <CardContent className="pt-6">
           <div className="text-2xl font-bold">~200</div>
-          <div className="text-sm text-muted-foreground">Proof Size (bytes)</div>
+          <div className="text-sm text-muted-foreground">{t("proofSize")}</div>
         </CardContent>
       </Card>
       <Card>
         <CardContent className="pt-6">
           <div className="text-2xl font-bold">~10ms</div>
-          <div className="text-sm text-muted-foreground">Verification Time</div>
+          <div className="text-sm text-muted-foreground">{t("verificationTime")}</div>
         </CardContent>
       </Card>
       <Card>
         <CardContent className="pt-6">
           <div className="text-2xl font-bold">~30s</div>
-          <div className="text-sm text-muted-foreground">Proof Generation</div>
+          <div className="text-sm text-muted-foreground">{t("proofGeneration")}</div>
         </CardContent>
       </Card>
       <Card>
         <CardContent className="pt-6">
           <div className="text-2xl font-bold">4</div>
-          <div className="text-sm text-muted-foreground">Public Signals</div>
+          <div className="text-sm text-muted-foreground">{t("publicSignals")}</div>
         </CardContent>
       </Card>
     </div>

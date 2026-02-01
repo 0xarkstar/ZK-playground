@@ -893,5 +893,82 @@
   "footer": {
     "builtFor": "Built for learning ZK technology. Open source on",
     "github": "GitHub"
+  },
+  "visualization.proofStats": {
+    "proofSize": "Proof Size (bytes)",
+    "verificationTime": "Verification Time",
+    "proofGeneration": "Proof Generation",
+    "publicSignals": "Public Signals"
+  },
+  "visualization.circuits": {
+    "multiplier": {
+      "name": "Multiplier",
+      "description": "Simple a * b = c circuit"
+    },
+    "rangeCheck": {
+      "name": "Range Check",
+      "description": "Verify value is between 0 and 2^n - 1"
+    },
+    "voting": {
+      "name": "Secret Vote",
+      "description": "Anonymous voting with Merkle proof"
+    }
+  },
+  "visualization.circuitNodes": {
+    "decomposeToBits": "Decompose to bits",
+    "binaryCheck": "Binary check",
+    "hashIdentity": "Hash identity",
+    "verifyMembership": "Verify membership",
+    "nullifierHash": "Nullifier hash",
+    "binaryVote": "Binary vote"
+  },
+  "visualization.comparisonCategories": {
+    "proofSize": "Proof Size",
+    "verificationTime": "Verification Time",
+    "proverTime": "Prover Time",
+    "setupRequired": "Setup Required",
+    "quantumSafe": "Quantum Safe"
+  },
+  "visualization.comparisonTable": {
+    "proofSize": {
+      "aspect": "Proof Size",
+      "snark": "~200-300 bytes",
+      "stark": "~45-200 KB",
+      "description": "SNARKs produce much smaller proofs, crucial for on-chain verification costs."
+    },
+    "verificationTime": {
+      "aspect": "Verification Time",
+      "snark": "~10 ms",
+      "stark": "~100 ms",
+      "description": "SNARK verification is faster, though both are practical for most applications."
+    },
+    "proverTime": {
+      "aspect": "Prover Time",
+      "snark": "Slower for large computations",
+      "stark": "Faster for large computations",
+      "description": "STARKs scale better with computation size due to quasi-linear complexity."
+    },
+    "trustedSetup": {
+      "aspect": "Trusted Setup",
+      "snark": "Required (per circuit)",
+      "stark": "Not required (transparent)",
+      "description": "STARKs eliminate the need for trusted ceremonies entirely."
+    },
+    "quantumResistance": {
+      "aspect": "Quantum Resistance",
+      "snark": "No (ECC-based)",
+      "stark": "Yes (hash-based)",
+      "description": "STARKs are secure against quantum computers; SNARKs are not."
+    },
+    "ecosystemMaturity": {
+      "aspect": "Ecosystem Maturity",
+      "snark": "More mature",
+      "stark": "Growing rapidly",
+      "description": "SNARKs have been around longer with more tools and documentation."
+    }
+  },
+  "demo.errors": {
+    "walletNotConnected": "Wallet not connected",
+    "walletOrContractNotReady": "Wallet not connected or contract not deployed"
   }
 }

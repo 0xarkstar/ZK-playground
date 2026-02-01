@@ -44,9 +44,11 @@ export function ContractDeployer({
   const [error, setError] = useState<string | null>(null);
   const [copied, setCopied] = useState<string | null>(null);
 
+  const tErrors = useTranslations("demo.errors");
+
   const deployContracts = async () => {
     if (!walletClient || !publicClient) {
-      setError("Wallet not connected");
+      setError(tErrors("walletNotConnected"));
       return;
     }
 

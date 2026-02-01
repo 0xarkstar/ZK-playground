@@ -8,24 +8,25 @@ import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useTranslations } from "next-intl";
 
 interface ComparisonData {
-  category: string;
+  categoryKey: string;
   snark: number;
   stark: number;
   label: string;
 }
 
-const comparisonData: ComparisonData[] = [
-  { category: "Proof Size", snark: 200, stark: 45000, label: "bytes" },
-  { category: "Verification Time", snark: 10, stark: 100, label: "ms" },
-  { category: "Prover Time", snark: 10000, stark: 5000, label: "ms (relative)" },
-  { category: "Setup Required", snark: 1, stark: 0, label: "yes/no" },
-  { category: "Quantum Safe", snark: 0, stark: 1, label: "yes/no" },
+const comparisonDataConfig: ComparisonData[] = [
+  { categoryKey: "proofSize", snark: 200, stark: 45000, label: "bytes" },
+  { categoryKey: "verificationTime", snark: 10, stark: 100, label: "ms" },
+  { categoryKey: "proverTime", snark: 10000, stark: 5000, label: "ms (relative)" },
+  { categoryKey: "setupRequired", snark: 1, stark: 0, label: "yes/no" },
+  { categoryKey: "quantumSafe", snark: 0, stark: 1, label: "yes/no" },
 ];
 
 type ChartType = "bar" | "radar";
 
 export function ComparisonChart() {
   const t = useTranslations("visualization.comparison");
+  const tCategories = useTranslations("visualization.comparisonCategories");
   const barChartRef = useRef<SVGSVGElement>(null);
   const [chartType, setChartType] = useState<ChartType>("bar");
   const [mounted, setMounted] = useState(false);
@@ -33,6 +34,12 @@ export function ComparisonChart() {
   useEffect(() => {
     setMounted(true);
   }, []);
+
+  // Create translated comparison data
+  const comparisonData = comparisonDataConfig.map((d) => ({
+    ...d,
+    category: tCategories(d.categoryKey),
+  }));
 
   useEffect(() => {
     if (!mounted || !barChartRef.current) return;
@@ -51,10 +58,10 @@ export function ComparisonChart() {
 
     const normalizedData = comparisonData.map((d) => ({
       ...d,
-      snarkNorm: d.category === "Setup Required" || d.category === "Quantum Safe"
+      snarkNorm: d.categoryKey === "setupRequired" || d.categoryKey === "quantumSafe"
         ? d.snark
         : Math.log10(d.snark + 1) / Math.log10(Math.max(d.snark, d.stark) + 1),
-      starkNorm: d.category === "Setup Required" || d.category === "Quantum Safe"
+      starkNorm: d.categoryKey === "setupRequired" || d.categoryKey === "quantumSafe"
         ? d.stark
         : Math.log10(d.stark + 1) / Math.log10(Math.max(d.snark, d.stark) + 1),
     }));
@@ -154,7 +161,7 @@ export function ComparisonChart() {
           .attr("fill", "currentColor")
           .text((d) => d.label);
       });
-  }, [mounted, chartType]);
+  }, [mounted, chartType, comparisonData]);
 
   if (!mounted) {
     return (
@@ -202,50 +209,24 @@ export function ComparisonChart() {
 
 export function DetailedComparison() {
   const t = useTranslations("visualization.comparison");
-  const comparisons = [
-    {
-      aspect: "Proof Size",
-      snark: "~200-300 bytes",
-      stark: "~45-200 KB",
-      winner: "snark" as const,
-      description: "SNARKs produce much smaller proofs, crucial for on-chain verification costs.",
-    },
-    {
-      aspect: "Verification Time",
-      snark: "~10 ms",
-      stark: "~100 ms",
-      winner: "snark" as const,
-      description: "SNARK verification is faster, though both are practical for most applications.",
-    },
-    {
-      aspect: "Prover Time",
-      snark: "Slower for large computations",
-      stark: "Faster for large computations",
-      winner: "stark" as const,
-      description: "STARKs scale better with computation size due to quasi-linear complexity.",
-    },
-    {
-      aspect: "Trusted Setup",
-      snark: "Required (per circuit)",
-      stark: "Not required (transparent)",
-      winner: "stark" as const,
-      description: "STARKs eliminate the need for trusted ceremonies entirely.",
-    },
-    {
-      aspect: "Quantum Resistance",
-      snark: "No (ECC-based)",
-      stark: "Yes (hash-based)",
-      winner: "stark" as const,
-      description: "STARKs are secure against quantum computers; SNARKs are not.",
-    },
-    {
-      aspect: "Ecosystem Maturity",
-      snark: "More mature",
-      stark: "Growing rapidly",
-      winner: "snark" as const,
-      description: "SNARKs have been around longer with more tools and documentation.",
-    },
+  const tTable = useTranslations("visualization.comparisonTable");
+
+  const comparisonKeys = [
+    { key: "proofSize", winner: "snark" as const },
+    { key: "verificationTime", winner: "snark" as const },
+    { key: "proverTime", winner: "stark" as const },
+    { key: "trustedSetup", winner: "stark" as const },
+    { key: "quantumResistance", winner: "stark" as const },
+    { key: "ecosystemMaturity", winner: "snark" as const },
   ];
+
+  const comparisons = comparisonKeys.map(({ key, winner }) => ({
+    aspect: tTable(`${key}.aspect`),
+    snark: tTable(`${key}.snark`),
+    stark: tTable(`${key}.stark`),
+    winner,
+    description: tTable(`${key}.description`),
+  }));
 
   return (
     <Card>

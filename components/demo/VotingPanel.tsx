@@ -141,6 +141,8 @@ export function VotingPanel({
                       variant={selectedVote === 1 ? "default" : "outline"}
                       className="w-full h-24 flex flex-col gap-2"
                       onClick={() => onVoteSelect(1)}
+                      aria-label={`${t("question")} - ${common("yes")}`}
+                      aria-pressed={selectedVote === 1}
                     >
                       <ThumbsUp
                         className={`h-8 w-8 ${
@@ -148,6 +150,7 @@ export function VotingPanel({
                             ? "text-primary-foreground"
                             : "text-green-500"
                         }`}
+                        aria-hidden="true"
                       />
                       <span className="font-semibold">{common("yes")}</span>
                     </Button>
@@ -158,6 +161,8 @@ export function VotingPanel({
                       variant={selectedVote === 0 ? "default" : "outline"}
                       className="w-full h-24 flex flex-col gap-2"
                       onClick={() => onVoteSelect(0)}
+                      aria-label={`${t("question")} - ${common("no")}`}
+                      aria-pressed={selectedVote === 0}
                     >
                       <ThumbsDown
                         className={`h-8 w-8 ${
@@ -165,6 +170,7 @@ export function VotingPanel({
                             ? "text-primary-foreground"
                             : "text-red-500"
                         }`}
+                        aria-hidden="true"
                       />
                       <span className="font-semibold">{common("no")}</span>
                     </Button>

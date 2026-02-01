@@ -33,6 +33,7 @@ type CircuitNodeData = {
   type: "input" | "output" | "signal" | "constraint" | "template";
   value?: string;
   description?: string;
+  descriptionKey?: string;
 };
 
 type CircuitNode = Node<CircuitNodeData>;
@@ -107,10 +108,17 @@ const nodeTypes = {
   template: TemplateNode,
 };
 
-const circuits = {
+interface CircuitConfig {
+  nameKey: string;
+  descriptionKey: string;
+  nodes: CircuitNode[];
+  edges: Edge[];
+}
+
+const circuitsConfig: Record<string, CircuitConfig> = {
   multiplier: {
-    name: "Multiplier",
-    description: "Simple a * b = c circuit",
+    nameKey: "multiplier.name",
+    descriptionKey: "multiplier.description",
     nodes: [
       { id: "a", type: "signal", position: { x: 100, y: 50 }, data: { label: "a", type: "input", value: "private" } },
       { id: "b", type: "signal", position: { x: 300, y: 50 }, data: { label: "b", type: "input", value: "private" } },
@@ -124,17 +132,17 @@ const circuits = {
     ] as Edge[],
   },
   rangeCheck: {
-    name: "Range Check",
-    description: "Verify value is between 0 and 2^n - 1",
+    nameKey: "rangeCheck.name",
+    descriptionKey: "rangeCheck.description",
     nodes: [
       { id: "value", type: "signal", position: { x: 200, y: 50 }, data: { label: "value", type: "input", value: "private" } },
-      { id: "bits", type: "template", position: { x: 200, y: 150 }, data: { label: "Num2Bits(n)", type: "template", description: "Decompose to bits" } },
+      { id: "bits", type: "template", position: { x: 200, y: 150 }, data: { label: "Num2Bits(n)", type: "template", descriptionKey: "decomposeToBits" } },
       { id: "bit0", type: "signal", position: { x: 50, y: 280 }, data: { label: "bit[0]", type: "signal" } },
       { id: "bit1", type: "signal", position: { x: 150, y: 280 }, data: { label: "bit[1]", type: "signal" } },
       { id: "bitn", type: "signal", position: { x: 350, y: 280 }, data: { label: "bit[n-1]", type: "signal" } },
-      { id: "check0", type: "constraint", position: { x: 50, y: 400 }, data: { label: "b*(b-1)=0", type: "constraint", description: "Binary check" } },
-      { id: "check1", type: "constraint", position: { x: 150, y: 400 }, data: { label: "b*(b-1)=0", type: "constraint", description: "Binary check" } },
-      { id: "checkn", type: "constraint", position: { x: 350, y: 400 }, data: { label: "b*(b-1)=0", type: "constraint", description: "Binary check" } },
+      { id: "check0", type: "constraint", position: { x: 50, y: 400 }, data: { label: "b*(b-1)=0", type: "constraint", descriptionKey: "binaryCheck" } },
+      { id: "check1", type: "constraint", position: { x: 150, y: 400 }, data: { label: "b*(b-1)=0", type: "constraint", descriptionKey: "binaryCheck" } },
+      { id: "checkn", type: "constraint", position: { x: 350, y: 400 }, data: { label: "b*(b-1)=0", type: "constraint", descriptionKey: "binaryCheck" } },
     ] as CircuitNode[],
     edges: [
       { id: "v-bits", source: "value", target: "bits", animated: true },
@@ -147,20 +155,20 @@ const circuits = {
     ] as Edge[],
   },
   voting: {
-    name: "Secret Vote",
-    description: "Anonymous voting with Merkle proof",
+    nameKey: "voting.name",
+    descriptionKey: "voting.description",
     nodes: [
       { id: "secret", type: "signal", position: { x: 100, y: 50 }, data: { label: "identitySecret", type: "input", value: "private" } },
       { id: "path", type: "signal", position: { x: 300, y: 50 }, data: { label: "pathElements", type: "input", value: "private" } },
-      { id: "poseidon", type: "template", position: { x: 100, y: 150 }, data: { label: "Poseidon(1)", type: "template", description: "Hash identity" } },
+      { id: "poseidon", type: "template", position: { x: 100, y: 150 }, data: { label: "Poseidon(1)", type: "template", descriptionKey: "hashIdentity" } },
       { id: "commitment", type: "signal", position: { x: 100, y: 260 }, data: { label: "commitment", type: "signal" } },
-      { id: "merkle", type: "template", position: { x: 250, y: 260 }, data: { label: "MerkleChecker", type: "template", description: "Verify membership" } },
+      { id: "merkle", type: "template", position: { x: 250, y: 260 }, data: { label: "MerkleChecker", type: "template", descriptionKey: "verifyMembership" } },
       { id: "root", type: "signal", position: { x: 250, y: 380 }, data: { label: "merkleRoot", type: "output", value: "public" } },
-      { id: "nullifier", type: "template", position: { x: 450, y: 150 }, data: { label: "Poseidon(2)", type: "template", description: "Nullifier hash" } },
+      { id: "nullifier", type: "template", position: { x: 450, y: 150 }, data: { label: "Poseidon(2)", type: "template", descriptionKey: "nullifierHash" } },
       { id: "extNull", type: "signal", position: { x: 550, y: 50 }, data: { label: "externalNull", type: "input", value: "public" } },
       { id: "nullHash", type: "signal", position: { x: 450, y: 260 }, data: { label: "nullifierHash", type: "output", value: "public" } },
       { id: "vote", type: "signal", position: { x: 600, y: 260 }, data: { label: "vote", type: "input", value: "public" } },
-      { id: "voteCheck", type: "constraint", position: { x: 600, y: 380 }, data: { label: "v*(v-1)=0", type: "constraint", description: "Binary vote" } },
+      { id: "voteCheck", type: "constraint", position: { x: 600, y: 380 }, data: { label: "v*(v-1)=0", type: "constraint", descriptionKey: "binaryVote" } },
     ] as CircuitNode[],
     edges: [
       { id: "s-p", source: "secret", target: "poseidon", animated: true },
@@ -178,18 +186,20 @@ const circuits = {
 
 export function CircuitGraph() {
   const t = useTranslations("visualization.circuit");
-  const [selectedCircuit, setSelectedCircuit] = useState<keyof typeof circuits>("multiplier");
-  const circuit = circuits[selectedCircuit];
+  const tCircuits = useTranslations("visualization.circuits");
+  const tNodes = useTranslations("visualization.circuitNodes");
+  const [selectedCircuit, setSelectedCircuit] = useState<keyof typeof circuitsConfig>("multiplier");
+  const circuit = circuitsConfig[selectedCircuit];
 
   const [nodes, setNodes, onNodesChange] = useNodesState(circuit.nodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(circuit.edges);
   const [selectedNode, setSelectedNode] = useState<CircuitNode | null>(null);
 
   const onCircuitChange = useCallback((value: string) => {
-    const key = value as keyof typeof circuits;
+    const key = value as keyof typeof circuitsConfig;
     setSelectedCircuit(key);
-    setNodes(circuits[key].nodes);
-    setEdges(circuits[key].edges);
+    setNodes(circuitsConfig[key].nodes);
+    setEdges(circuitsConfig[key].edges);
     setSelectedNode(null);
   }, [setNodes, setEdges]);
 
@@ -206,15 +216,15 @@ export function CircuitGraph() {
               <SelectValue placeholder={t("circuitSelect.placeholder")} />
             </SelectTrigger>
             <SelectContent>
-              {Object.entries(circuits).map(([key, c]) => (
+              {Object.entries(circuitsConfig).map(([key, c]) => (
                 <SelectItem key={key} value={key}>
-                  {c.name}
+                  {tCircuits(c.nameKey)}
                 </SelectItem>
               ))}
             </SelectContent>
           </Select>
         </div>
-        <div className="text-sm text-muted-foreground">{circuit.description}</div>
+        <div className="text-sm text-muted-foreground">{tCircuits(circuit.descriptionKey)}</div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-4">
@@ -278,9 +288,11 @@ export function CircuitGraph() {
                     {t("nodeInfo.visibility")}: {(selectedNode.data as unknown as CircuitNodeData).value}
                   </div>
                 )}
-                {(selectedNode.data as unknown as CircuitNodeData).description && (
+                {((selectedNode.data as unknown as CircuitNodeData).description || (selectedNode.data as unknown as CircuitNodeData).descriptionKey) && (
                   <div className="text-sm text-muted-foreground">
-                    {(selectedNode.data as unknown as CircuitNodeData).description}
+                    {(selectedNode.data as unknown as CircuitNodeData).descriptionKey
+                      ? tNodes((selectedNode.data as unknown as CircuitNodeData).descriptionKey!)
+                      : (selectedNode.data as unknown as CircuitNodeData).description}
                   </div>
                 )}
               </CardContent>
