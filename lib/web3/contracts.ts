@@ -7,6 +7,17 @@ export {
   MASTERMIND_GAME_ABI,
   SIMPLE_MIXER_ABI,
   PRIVATE_CLUB_ABI,
+  // New beginner demo ABIs
+  HASH_PREIMAGE_VERIFIER_ABI,
+  HASH_PREIMAGE_APP_ABI,
+  AGE_VERIFICATION_VERIFIER_ABI,
+  AGE_VERIFIER_APP_ABI,
+  PASSWORD_PROOF_VERIFIER_ABI,
+  PASSWORD_VERIFIER_APP_ABI,
+  SUDOKU_VERIFIER_ABI,
+  SUDOKU_APP_ABI,
+  CREDENTIAL_PROOF_VERIFIER_ABI,
+  CREDENTIAL_VERIFIER_APP_ABI,
 } from "./demo-abis";
 
 // Re-export demo bytecodes
@@ -21,6 +32,17 @@ export {
   MASTERMIND_GAME_BYTECODE,
   SIMPLE_MIXER_BYTECODE,
   PRIVATE_CLUB_BYTECODE,
+  // New beginner demo bytecodes
+  HASH_PREIMAGE_VERIFIER_BYTECODE,
+  HASH_PREIMAGE_APP_BYTECODE,
+  AGE_VERIFICATION_VERIFIER_BYTECODE,
+  AGE_VERIFIER_APP_BYTECODE,
+  PASSWORD_PROOF_VERIFIER_BYTECODE,
+  PASSWORD_VERIFIER_APP_BYTECODE,
+  SUDOKU_VERIFIER_BYTECODE,
+  SUDOKU_APP_BYTECODE,
+  CREDENTIAL_PROOF_VERIFIER_BYTECODE,
+  CREDENTIAL_VERIFIER_APP_BYTECODE,
 } from "./demo-bytecodes";
 
 export const VERIFIER_ABI: Abi = [
@@ -305,3 +327,28 @@ export const MIXER_VKEY_PATH = "/circuits/mixer_demo_verification_key.json";
 export const MEMBERSHIP_WASM_PATH = "/circuits/private_membership.wasm";
 export const MEMBERSHIP_ZKEY_PATH = "/circuits/private_membership_final.zkey";
 export const MEMBERSHIP_VKEY_PATH = "/circuits/private_membership_verification_key.json";
+
+// Circuit paths - Hash Preimage
+export const HASH_PREIMAGE_WASM_PATH = "/circuits/hash_preimage.wasm";
+export const HASH_PREIMAGE_ZKEY_PATH = "/circuits/hash_preimage_final.zkey";
+export const HASH_PREIMAGE_VKEY_PATH = "/circuits/hash_preimage_verification_key.json";
+
+// Circuit paths - Age Verification
+export const AGE_VERIFICATION_WASM_PATH = "/circuits/age_verification.wasm";
+export const AGE_VERIFICATION_ZKEY_PATH = "/circuits/age_verification_final.zkey";
+export const AGE_VERIFICATION_VKEY_PATH = "/circuits/age_verification_verification_key.json";
+
+// Circuit paths - Password Proof
+export const PASSWORD_PROOF_WASM_PATH = "/circuits/password_proof.wasm";
+export const PASSWORD_PROOF_ZKEY_PATH = "/circuits/password_proof_final.zkey";
+export const PASSWORD_PROOF_VKEY_PATH = "/circuits/password_proof_verification_key.json";
+
+// Circuit paths - Sudoku
+export const SUDOKU_WASM_PATH = "/circuits/sudoku.wasm";
+export const SUDOKU_ZKEY_PATH = "/circuits/sudoku_final.zkey";
+export const SUDOKU_VKEY_PATH = "/circuits/sudoku_verification_key.json";
+
+// Circuit paths - Credential Proof
+export const CREDENTIAL_PROOF_WASM_PATH = "/circuits/credential_proof.wasm";
+export const CREDENTIAL_PROOF_ZKEY_PATH = "/circuits/credential_proof_final.zkey";
+export const CREDENTIAL_PROOF_VKEY_PATH = "/circuits/credential_proof_verification_key.json";
