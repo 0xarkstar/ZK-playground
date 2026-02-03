@@ -1,5 +1,28 @@
 import { Abi } from "viem";
 
+// Re-export demo ABIs
+export {
+  PRIVATE_AIRDROP_ABI,
+  SEALED_BID_AUCTION_ABI,
+  MASTERMIND_GAME_ABI,
+  SIMPLE_MIXER_ABI,
+  PRIVATE_CLUB_ABI,
+} from "./demo-abis";
+
+// Re-export demo bytecodes
+export {
+  AIRDROP_VERIFIER_BYTECODE,
+  AUCTION_VERIFIER_BYTECODE,
+  MASTERMIND_VERIFIER_BYTECODE,
+  MIXER_VERIFIER_BYTECODE,
+  MEMBERSHIP_VERIFIER_BYTECODE,
+  PRIVATE_AIRDROP_BYTECODE,
+  SEALED_BID_AUCTION_BYTECODE,
+  MASTERMIND_GAME_BYTECODE,
+  SIMPLE_MIXER_BYTECODE,
+  PRIVATE_CLUB_BYTECODE,
+} from "./demo-bytecodes";
+
 export const VERIFIER_ABI: Abi = [
   {
     inputs: [
@@ -253,7 +276,32 @@ export const BASE_SEPOLIA_CHAIN = {
 export const TREE_DEPTH = 10; // Demo uses 10 levels
 export const MAX_VOTERS = 2 ** TREE_DEPTH;
 
-// Circuit paths
+// Circuit paths - Voting
 export const CIRCUIT_WASM_PATH = "/circuits/vote_demo.wasm";
 export const CIRCUIT_ZKEY_PATH = "/circuits/vote_demo_final.zkey";
 export const VERIFICATION_KEY_PATH = "/circuits/verification_key.json";
+
+// Circuit paths - Airdrop
+export const AIRDROP_WASM_PATH = "/circuits/merkle_airdrop.wasm";
+export const AIRDROP_ZKEY_PATH = "/circuits/merkle_airdrop_final.zkey";
+export const AIRDROP_VKEY_PATH = "/circuits/merkle_airdrop_verification_key.json";
+
+// Circuit paths - Auction (Sealed Bid)
+export const AUCTION_WASM_PATH = "/circuits/sealed_bid.wasm";
+export const AUCTION_ZKEY_PATH = "/circuits/sealed_bid_final.zkey";
+export const AUCTION_VKEY_PATH = "/circuits/sealed_bid_verification_key.json";
+
+// Circuit paths - Mastermind
+export const MASTERMIND_WASM_PATH = "/circuits/mastermind.wasm";
+export const MASTERMIND_ZKEY_PATH = "/circuits/mastermind_final.zkey";
+export const MASTERMIND_VKEY_PATH = "/circuits/mastermind_verification_key.json";
+
+// Circuit paths - Mixer
+export const MIXER_WASM_PATH = "/circuits/mixer_demo.wasm";
+export const MIXER_ZKEY_PATH = "/circuits/mixer_demo_final.zkey";
+export const MIXER_VKEY_PATH = "/circuits/mixer_demo_verification_key.json";
+
+// Circuit paths - Private Club (Membership)
+export const MEMBERSHIP_WASM_PATH = "/circuits/private_membership.wasm";
+export const MEMBERSHIP_ZKEY_PATH = "/circuits/private_membership_final.zkey";
+export const MEMBERSHIP_VKEY_PATH = "/circuits/private_membership_verification_key.json";

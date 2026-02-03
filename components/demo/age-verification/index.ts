@@ -1,0 +1,1 @@
+export { AgeVerificationDemo } from "./AgeVerificationDemo";

@@ -13,7 +13,16 @@
     "viewOn": "View on",
     "learnMore": "Learn More",
     "votes": "votes",
-    "totalVotes": "Total votes"
+    "totalVotes": "Total votes",
+    "walletRequired": "Wallet Connection Required",
+    "walletRequiredDescription": "This demo requires a wallet connection to interact with smart contracts on the blockchain. Please connect your wallet to continue.",
+    "testnetAlert": "Testnet Demo",
+    "testnetAlertDescription": "This demo runs on Base Sepolia testnet. You'll need test ETH for gas fees. Get free test ETH from",
+    "connectedWallet": "Connected Wallet",
+    "simulationMode": "Simulation Mode",
+    "simulationModeDescription": "This demo simulates blockchain interaction locally. ZK circuits are not yet compiled for on-chain deployment.",
+    "liveMode": "Live",
+    "circuitReady": "Circuit Ready"
   },
   "nav": {
     "education": "Education",
@@ -23,7 +32,18 @@
     "stark": "zk-STARK",
     "comparison": "Comparison",
     "circuit": "Circuit",
-    "proofProcess": "Proof Process"
+    "proofProcess": "Proof Process",
+    "voting": "Voting",
+    "hashPreimage": "Hash Preimage",
+    "ageVerification": "Age Verification",
+    "passwordProof": "Password Proof",
+    "sudoku": "Sudoku",
+    "mastermind": "Mastermind",
+    "airdrop": "Airdrop",
+    "credential": "Credential",
+    "auction": "Auction",
+    "mixer": "Mixer",
+    "privateClub": "Private Club"
   },
   "home": {
     "badge": "Learn Zero-Knowledge Proofs",
@@ -295,6 +315,842 @@
     "errors": {
       "walletNotConnected": "Wallet not connected",
       "walletOrContractNotReady": "Wallet not connected or contract not deployed"
+    },
+    "hashPreimage": {
+      "badge": "Beginner Demo",
+      "title": "Hash Preimage Proof",
+      "description": "Prove you know a secret value that hashes to a known hash, without revealing the secret",
+      "intro": {
+        "title": "How Hash Preimage Proofs Work",
+        "description": "This demo shows the fundamental ZK concept: proving knowledge of a secret that produces a known hash, without revealing the secret itself."
+      },
+      "step1": {
+        "title": "Create Hash Commitment",
+        "secretLabel": "Your Secret",
+        "secretPlaceholder": "Enter a secret value...",
+        "secretHint": "This value will never be revealed to the verifier",
+        "computeButton": "Compute Hash",
+        "hashResult": "Poseidon Hash"
+      },
+      "step2": {
+        "title": "Verify Knowledge",
+        "hashLabel": "Hash to Verify Against",
+        "hashPlaceholder": "0x...",
+        "hashHint": "This is the public hash that you claim to know the preimage of",
+        "verifyButton": "Generate & Verify Proof"
+      },
+      "steps": {
+        "convertingToField": "Converting secret to field element...",
+        "computingPoseidon": "Computing Poseidon hash...",
+        "formattingHash": "Formatting hash output...",
+        "complete": "Complete!",
+        "generatingWitness": "Generating witness...",
+        "computingProof": "Computing ZK proof...",
+        "verifyingProof": "Verifying proof...",
+        "verified": "Proof verified!",
+        "failed": "Proof failed!"
+      },
+      "result": {
+        "verified": "Proof Verified!",
+        "failed": "Proof Failed",
+        "verifiedDesc": "You have proven knowledge of the preimage without revealing it.",
+        "failedDesc": "The provided secret does not match the hash.",
+        "proofTime": "Proof time"
+      },
+      "howItWorks": {
+        "title": "How It Works",
+        "step1": {
+          "title": "Hash Your Secret",
+          "description": "Your secret is hashed using Poseidon, a ZK-friendly hash function."
+        },
+        "step2": {
+          "title": "Generate Proof",
+          "description": "A ZK proof is created showing you know the preimage of the hash."
+        },
+        "step3": {
+          "title": "Verify Without Revealing",
+          "description": "Anyone can verify the proof without learning your secret."
+        }
+      },
+      "privacy": {
+        "title": "Privacy Guarantee",
+        "description": "The verifier learns only that you know a value that hashes to the public hash. They cannot determine what your secret actually is, even with unlimited computational power.",
+        "tags": {
+          "zeroKnowledge": "Zero-Knowledge",
+          "poseidonHash": "Poseidon Hash",
+          "noSecretLeaked": "No Secret Leaked"
+        }
+      }
+    },
+    "ageVerification": {
+      "badge": "Beginner Demo",
+      "title": "Age Verification",
+      "description": "Prove you are above a certain age without revealing your exact birthdate",
+      "intro": {
+        "title": "Private Age Verification",
+        "description": "Prove you meet an age requirement (e.g., 18+) without revealing your exact age or birthdate. Perfect for age-gated content and services."
+      },
+      "step1": {
+        "title": "Your Identity",
+        "birthdateLabel": "Birth Date",
+        "hiddenBirthdate": "Birthdate hidden for privacy",
+        "year": "Year",
+        "month": "Month",
+        "day": "Day",
+        "calculatedAge": "Your age",
+        "years": "years",
+        "generateButton": "Generate Identity Commitment",
+        "commitmentCreated": "Identity commitment created"
+      },
+      "step2": {
+        "title": "Verify Age Requirement",
+        "thresholdLabel": "Minimum Age Required",
+        "verifyButton": "Prove Age Meets Requirement"
+      },
+      "steps": {
+        "hashingBirthdate": "Hashing birth date components...",
+        "creatingCommitment": "Creating identity commitment...",
+        "complete": "Complete!",
+        "computingAge": "Computing age from birth date...",
+        "verifyingIdentity": "Verifying identity commitment...",
+        "checkingThreshold": "Checking age threshold...",
+        "generatingProof": "Generating ZK proof...",
+        "verified": "Age verified!",
+        "failed": "Age verification failed"
+      },
+      "result": {
+        "verified": "Age Verified!",
+        "failed": "Age Requirement Not Met",
+        "verifiedDesc": "Proven: Age >= {threshold} without revealing exact age",
+        "failedDesc": "Could not prove age >= {threshold}",
+        "proofTime": "Proof time"
+      },
+      "revealed": {
+        "title": "What Gets Revealed",
+        "public": "Public (Visible)",
+        "publicItems": {
+          "threshold": "Age threshold (e.g., 18)",
+          "result": "Pass/Fail result",
+          "commitment": "Identity commitment (hash)"
+        },
+        "private": "Private (Hidden)",
+        "privateItems": {
+          "birthdate": "Exact birth date",
+          "exactAge": "Exact age",
+          "identity": "Your identity"
+        }
+      },
+      "useCases": {
+        "title": "Use Cases",
+        "items": {
+          "alcohol": {
+            "title": "Alcohol Purchase",
+            "description": "Prove 21+ for purchases"
+          },
+          "content": {
+            "title": "Adult Content",
+            "description": "Age-gate without ID upload"
+          },
+          "voting": {
+            "title": "Voting Eligibility",
+            "description": "Prove voting age (18+)"
+          },
+          "insurance": {
+            "title": "Insurance",
+            "description": "Age-based eligibility"
+          }
+        }
+      }
+    },
+    "passwordProof": {
+      "badge": "Beginner Demo",
+      "title": "Password Proof",
+      "description": "Authenticate without ever transmitting your password over the network",
+      "intro": {
+        "title": "Zero-Knowledge Authentication",
+        "description": "Prove you know your password without sending it to the server. Even a compromised server cannot steal your password."
+      },
+      "tabs": {
+        "register": "Register",
+        "login": "Login"
+      },
+      "comparison": {
+        "traditional": {
+          "title": "Traditional Authentication",
+          "item1": "Password sent to server",
+          "item2": "Server stores password hash",
+          "item3": "Vulnerable to interception"
+        },
+        "zkBased": {
+          "title": "ZK-Based Authentication",
+          "item1": "Password never leaves device",
+          "item2": "Only proof sent to server",
+          "item3": "Even server cannot learn password"
+        }
+      },
+      "register": {
+        "title": "Register Password",
+        "passwordLabel": "Choose Password",
+        "passwordPlaceholder": "Enter a strong password...",
+        "passwordHint": "This password will never be transmitted",
+        "registerButton": "Register (Store Hash)",
+        "success": "Password Registered!",
+        "storedHash": "Stored Hash:",
+        "salt": "Salt:",
+        "securityNote": "Only the hash is stored. Your password is never saved or transmitted.",
+        "resetButton": "Reset Demo"
+      },
+      "login": {
+        "title": "Login with Proof",
+        "passwordLabel": "Enter Password",
+        "passwordPlaceholder": "Enter your password...",
+        "authenticateButton": "Authenticate with ZK Proof"
+      },
+      "steps": {
+        "generatingSalt": "Generating random salt...",
+        "hashingPassword": "Hashing password with Poseidon...",
+        "storingHash": "Storing hash...",
+        "registrationComplete": "Registration complete!",
+        "preparingProof": "Preparing proof inputs...",
+        "computingHash": "Computing password hash...",
+        "generatingProof": "Generating ZK proof...",
+        "verifyingProof": "Verifying proof...",
+        "authSuccess": "Authentication successful!",
+        "authFailed": "Authentication failed"
+      },
+      "result": {
+        "success": "Authentication Successful!",
+        "failed": "Authentication Failed",
+        "successDesc": "Proven: You know the correct password without revealing it.",
+        "failedDesc": "The password proof did not verify. Wrong password?",
+        "proofTime": "Proof time"
+      },
+      "security": {
+        "title": "Security Features",
+        "features": {
+          "salted": {
+            "title": "Salted Hashing",
+            "description": "Random salt prevents rainbow table attacks"
+          },
+          "zkProof": {
+            "title": "ZK Proof",
+            "description": "Password knowledge proven without transmission"
+          },
+          "poseidon": {
+            "title": "Poseidon Hash",
+            "description": "ZK-friendly hash function for efficient proofs"
+          }
+        }
+      }
+    },
+    "sudoku": {
+      "badge": "Intermediate Demo",
+      "title": "Sudoku Verifier",
+      "description": "Prove you solved a Sudoku puzzle without revealing the solution",
+      "intro": {
+        "title": "Private Puzzle Solution",
+        "description": "Demonstrate that you know a valid Sudoku solution without showing it. Perfect for competitions and skill verification."
+      },
+      "grid": {
+        "title": "Sudoku Puzzle",
+        "reset": "Reset"
+      },
+      "verify": {
+        "title": "Verify Solution",
+        "description": "Generate a ZK proof that your solution is valid",
+        "button": "Verify Solution",
+        "proven": "What's Proven",
+        "provenItems": {
+          "valid": "Solution is a valid Sudoku",
+          "matches": "Solution matches the puzzle clues"
+        },
+        "hidden": "What's Hidden",
+        "hiddenItems": {
+          "solution": "The actual solution values"
+        }
+      },
+      "steps": {
+        "checkingClues": "Checking solution matches clues...",
+        "checkingRows": "Verifying rows...",
+        "checkingCols": "Verifying columns...",
+        "checkingBoxes": "Verifying 3x3 boxes...",
+        "generatingProof": "Generating ZK proof...",
+        "verified": "Solution verified!",
+        "failed": "Invalid solution"
+      },
+      "result": {
+        "verified": "Valid Solution!",
+        "failed": "Invalid Solution",
+        "verifiedDesc": "Proven: You know a valid solution without revealing it.",
+        "failedDesc": "The solution does not satisfy all Sudoku constraints."
+      },
+      "useCases": {
+        "title": "Use Cases",
+        "competitions": {
+          "title": "Competitions",
+          "description": "Prove solving ability without spoiling puzzles"
+        },
+        "gaming": {
+          "title": "Gaming",
+          "description": "Verifiable puzzle achievements"
+        },
+        "education": {
+          "title": "Education",
+          "description": "Demonstrate skill without cheating"
+        }
+      }
+    },
+    "mastermind": {
+      "badge": "Live Demo - Base Sepolia",
+      "title": "Mastermind Game",
+      "description": "Deploy contracts, commit secret codes, and verify hints with ZK proofs on Base Sepolia",
+      "walletConnection": "Wallet Connection",
+      "realBlockchainAlert": {
+        "title": "Real Blockchain Demo",
+        "description": "This demo deploys real contracts to Base Sepolia. You need testnet ETH from"
+      },
+      "tabs": {
+        "demo": "Demo",
+        "howItWorks": "How It Works"
+      },
+      "adminControls": {
+        "title": "Game Admin",
+        "codeSetter": "Code Setter",
+        "gameStatus": "Game Status",
+        "gameActive": "Game is in progress",
+        "gameNotActive": "No active game",
+        "active": "Active",
+        "inactive": "Inactive",
+        "resetGame": "Reset Game"
+      },
+      "progress": {
+        "title": "Progress",
+        "deployContracts": "Deploy Contracts",
+        "commitCode": "Commit Code",
+        "startGame": "Start Game",
+        "makeGuess": "Make Guess",
+        "verifyHints": "Verify Hints",
+        "complete": "Complete"
+      },
+      "codeSetter": {
+        "title": "Code Setter",
+        "secretCode": "Secret Code (Click to change)",
+        "commitButton": "Commit to Code",
+        "committed": "Code committed on-chain!"
+      },
+      "guesser": {
+        "title": "Guesser",
+        "yourGuess": "Your Guess",
+        "submitGuess": "Submit Guess",
+        "previousGuesses": "Previous Guesses",
+        "won": "You Won!",
+        "wonDesc": "Cracked the code in {attempts} attempts!",
+        "playAgain": "Play Again",
+        "showProof": "Show Proof Details",
+        "hideProof": "Hide Proof Details",
+        "proofData": "Proof Data (Groth16)"
+      },
+      "steps": {
+        "generatingSalt": "Generating salt...",
+        "computingCommitment": "Computing code commitment...",
+        "submittingOnChain": "Submitting to blockchain...",
+        "waitingConfirmation": "Waiting for confirmation...",
+        "complete": "Complete!",
+        "computingHint": "Computing hint...",
+        "preparingInputs": "Preparing circuit inputs...",
+        "generatingProof": "Generating ZK proof...",
+        "verifyingProof": "Verifying proof...",
+        "formattingProof": "Formatting proof for Solidity...",
+        "verified": "Hint verified on-chain!"
+      },
+      "stats": {
+        "title": "Game Stats",
+        "guesses": "Guesses Made",
+        "verified": "Verified on Chain",
+        "gameStatus": "Game Status",
+        "won": "Won!",
+        "inProgress": "In Progress",
+        "notStarted": "Not Started"
+      },
+      "contractInfo": {
+        "title": "Contract Info",
+        "network": "Network",
+        "verifier": "Verifier",
+        "gameContract": "Game Contract",
+        "notDeployed": "Not deployed",
+        "viewOnBasescan": "View on Basescan"
+      },
+      "howItWorks": {
+        "title": "ZK Guarantees",
+        "zkGuarantees": "What ZK Provides",
+        "items": {
+          "commitment": "Code setter cannot change code mid-game",
+          "hints": "All hints are mathematically correct",
+          "noCheat": "Neither player can cheat"
+        },
+        "legend": "Hint Legend",
+        "blackPeg": "Correct color, correct position",
+        "whitePeg": "Correct color, wrong position"
+      }
+    },
+    "airdrop": {
+      "badge": "Live Demo - Base Sepolia",
+      "title": "Private Airdrop",
+      "description": "Deploy contracts, register eligibility, and claim tokens anonymously on Base Sepolia",
+      "walletConnection": "Wallet Connection",
+      "realBlockchainAlert": {
+        "title": "Real Blockchain Demo",
+        "description": "This demo deploys real contracts to Base Sepolia. You need testnet ETH from"
+      },
+      "tabs": {
+        "demo": "Demo",
+        "howItWorks": "How It Works"
+      },
+      "adminControls": {
+        "title": "Admin Controls",
+        "owner": "Owner",
+        "airdropStatus": "Airdrop Status",
+        "airdropActive": "Airdrop is active",
+        "airdropNotActive": "Airdrop not started",
+        "active": "Active",
+        "inactive": "Inactive",
+        "initializeAirdrop": "Initialize Airdrop",
+        "endAirdrop": "End Airdrop",
+        "registerFirst": "Register at least one eligible address first"
+      },
+      "progress": {
+        "title": "Progress",
+        "deployContracts": "Deploy Contracts",
+        "registerEligibility": "Register Eligibility",
+        "initializeAirdrop": "Initialize Airdrop",
+        "generateProof": "Generate Proof",
+        "claimAirdrop": "Claim Airdrop",
+        "complete": "Complete"
+      },
+      "setup": {
+        "title": "Register Eligibility",
+        "description": "Register to be eligible for the airdrop",
+        "button": "Register",
+        "registered": "Registered",
+        "yourCommitment": "Your Commitment",
+        "leafIndex": "Leaf Index"
+      },
+      "claim": {
+        "title": "Generate Proof",
+        "description": "Generate a ZK proof to claim anonymously",
+        "button": "Generate Proof",
+        "proofGenerated": "Proof Generated",
+        "nullifier": "Nullifier",
+        "generating": "Generating..."
+      },
+      "submit": {
+        "title": "Submit Claim",
+        "button": "Claim Airdrop",
+        "claimed": "Claimed Successfully!",
+        "amount": "Amount",
+        "claimAmount": "Claim Amount",
+        "viewTx": "View Transaction"
+      },
+      "steps": {
+        "generatingSecret": "Generating identity secret...",
+        "computingCommitment": "Computing commitment...",
+        "buildingTree": "Building Merkle tree...",
+        "computingRoot": "Computing root...",
+        "complete": "Complete!",
+        "generatingProof": "Generating ZK proof...",
+        "computingNullifier": "Computing nullifier...",
+        "verifyingProof": "Verifying proof locally...",
+        "generatingMerkle": "Generating Merkle proof...",
+        "preparingInputs": "Preparing circuit inputs...",
+        "formattingProof": "Formatting proof for Solidity..."
+      },
+      "stats": {
+        "title": "Airdrop Stats",
+        "totalClaimed": "Total Claimed",
+        "claimCount": "Claims",
+        "remaining": "Remaining",
+        "eligible": "Eligible"
+      },
+      "contractInfo": {
+        "title": "Contract Info",
+        "network": "Network",
+        "verifier": "Verifier",
+        "airdropContract": "Airdrop Contract",
+        "notDeployed": "Not deployed",
+        "viewOnBasescan": "View on Basescan"
+      },
+      "privacy": {
+        "title": "How It Works",
+        "hidden": {
+          "title": "What's Hidden",
+          "item1": "Your identity (which commitment you own)",
+          "item2": "Your secret key"
+        },
+        "proven": {
+          "title": "What's Proven",
+          "item1": "You're in the eligible list (Merkle proof)",
+          "item2": "You haven't claimed before (nullifier)"
+        }
+      }
+    },
+    "credential": {
+      "badge": "Intermediate Demo",
+      "title": "Credential Proof",
+      "description": "Prove your qualifications without revealing your identity or full credential details",
+      "intro": {
+        "title": "Anonymous Credential Verification",
+        "description": "Prove you hold a valid credential (degree, certification) without revealing who you are."
+      },
+      "issue": {
+        "title": "Issue Credential",
+        "type": "Credential Type",
+        "issuer": "Issuing Institution",
+        "level": "Qualification Level",
+        "button": "Issue Credential",
+        "success": "Credential Issued!",
+        "credentialHash": "Credential Hash:"
+      },
+      "verify": {
+        "title": "Verify Credential",
+        "description": "Prove your credential meets requirements",
+        "minLevel": "Minimum Level Required",
+        "button": "Verify with ZK Proof",
+        "verified": "Credential Verified!",
+        "failed": "Verification Failed",
+        "verifiedDesc": "Proven: You hold a valid credential meeting the requirements.",
+        "failedDesc": "Could not prove credential meets minimum level."
+      },
+      "steps": {
+        "generatingCredential": "Generating credential data...",
+        "computingHash": "Computing credential hash...",
+        "signingCredential": "Signing credential...",
+        "complete": "Complete!",
+        "verifyingSignature": "Verifying issuer signature...",
+        "checkingAttributes": "Checking attributes...",
+        "generatingProof": "Generating ZK proof...",
+        "verified": "Verified!",
+        "failed": "Failed"
+      },
+      "useCases": {
+        "title": "Use Cases",
+        "hiring": {
+          "title": "Job Applications",
+          "description": "Prove qualifications without revealing identity"
+        },
+        "education": {
+          "title": "Academic Verification",
+          "description": "Verify degrees anonymously"
+        },
+        "licensing": {
+          "title": "Professional Licensing",
+          "description": "Prove certifications privately"
+        }
+      }
+    },
+    "auction": {
+      "badge": "Live Demo - Base Sepolia",
+      "title": "Sealed Bid Auction",
+      "description": "Deploy contracts, commit bids, and reveal with ZK proofs on Base Sepolia",
+      "walletConnection": "Wallet Connection",
+      "realBlockchainAlert": {
+        "title": "Real Blockchain Demo",
+        "description": "This demo deploys real contracts to Base Sepolia. You need testnet ETH from"
+      },
+      "tabs": {
+        "demo": "Demo",
+        "howItWorks": "How It Works"
+      },
+      "progress": {
+        "title": "Progress",
+        "deployContracts": "Deploy Contracts",
+        "createAuction": "Create Auction",
+        "commitBid": "Commit Bid",
+        "generateProof": "Generate Proof",
+        "revealBid": "Reveal Bid",
+        "complete": "Complete"
+      },
+      "createAuction": {
+        "title": "Create Auction",
+        "description": "Create a new sealed-bid auction with ZK verification.",
+        "button": "Create Auction"
+      },
+      "bid": {
+        "title": "Submit Sealed Bid",
+        "amount": "Bid Amount (ETH)",
+        "button": "Commit Bid",
+        "committed": "Bid Committed",
+        "yourBid": "Your Bid"
+      },
+      "reveal": {
+        "title": "Reveal Bid",
+        "generateProof": "Generate Proof",
+        "proofReady": "Proof Ready",
+        "button": "Reveal Bid",
+        "revealed": "Bid Revealed",
+        "generating": "Generating...",
+        "viewTx": "View Transaction"
+      },
+      "auctionStatus": {
+        "title": "Auction Status",
+        "phase": "Phase",
+        "bidders": "Bidders",
+        "winner": "Winner",
+        "winningBid": "Winning Bid"
+      },
+      "contractInfo": {
+        "title": "Contract Info",
+        "network": "Network",
+        "verifier": "Verifier",
+        "auctionContract": "Auction Contract",
+        "notDeployed": "Not deployed",
+        "viewOnBasescan": "View on Basescan"
+      },
+      "steps": {
+        "preparingInputs": "Preparing circuit inputs...",
+        "generatingProof": "Generating ZK proof...",
+        "verifyingProof": "Verifying proof...",
+        "formattingProof": "Formatting proof for Solidity...",
+        "complete": "Complete!"
+      },
+      "privacy": {
+        "title": "How It Works",
+        "hidden": {
+          "title": "What's Hidden",
+          "item1": "Your actual bid amount during bidding phase",
+          "item2": "Your bid salt (random secret)"
+        },
+        "proven": {
+          "title": "What's Proven",
+          "item1": "Your bid is within min/max range",
+          "item2": "Commitment matches bid + salt"
+        }
+      }
+    },
+    "mixer": {
+      "badge": "Live Demo - Base Sepolia",
+      "title": "Mixer Demo",
+      "description": "Learn how privacy pools break transaction linkability (educational purposes only)",
+      "walletConnection": "Wallet Connection",
+      "realBlockchainAlert": {
+        "title": "Real Blockchain Demo",
+        "description": "This demo deploys real contracts to Base Sepolia. You need testnet ETH from"
+      },
+      "disclaimer": {
+        "title": "Educational Disclaimer",
+        "description": "This demo is for educational purposes only. It demonstrates cryptographic concepts. Do not use for actual privacy applications without legal review."
+      },
+      "intro": {
+        "title": "Understanding Mixers",
+        "description": "Learn how ZK proofs can break the link between deposits and withdrawals using nullifiers and Merkle proofs."
+      },
+      "tabs": {
+        "demo": "Demo",
+        "howItWorks": "How It Works"
+      },
+      "progress": {
+        "title": "Progress",
+        "deployContracts": "Deploy Contracts",
+        "deposit": "Deposit",
+        "generateProof": "Generate Proof",
+        "withdraw": "Withdraw",
+        "complete": "Complete"
+      },
+      "flow": {
+        "depositor": "Depositor",
+        "depositAmount": "0.01 ETH",
+        "mixerPool": "Mixer Pool",
+        "deposits": "deposits",
+        "withdrawer": "Withdrawer",
+        "unlinkable": "Unlinkable"
+      },
+      "deposit": {
+        "title": "Deposit",
+        "description": "Generate secrets and deposit funds",
+        "fixedAmount": "Fixed denomination",
+        "amount": "Amount",
+        "button": "Generate Note & Deposit",
+        "deposited": "Deposited",
+        "success": "Deposited!",
+        "nullifier": "Nullifier (keep secret!):",
+        "secret": "Secret:",
+        "saveNote": "Save your nullifier and secret! You need them to withdraw.",
+        "connectWallet": "Connect wallet to deposit"
+      },
+      "withdraw": {
+        "title": "Withdraw",
+        "description": "Withdraw to a fresh address with ZK proof",
+        "recipient": "Recipient Address",
+        "button": "Withdraw with ZK Proof",
+        "generateProof": "Generate Proof",
+        "proofReady": "Proof Ready",
+        "generating": "Generating...",
+        "withdrawn": "Withdrawn",
+        "viewTx": "View Transaction",
+        "success": "Withdrawn!",
+        "successDesc": "Funds sent to new address. Link to deposit is broken.",
+        "connectWallet": "Connect wallet to withdraw",
+        "verified": "Verified:",
+        "nullifier": "Nullifier Hash:",
+        "showProof": "Show Proof Details",
+        "hideProof": "Hide Proof Details",
+        "proofData": "Proof Data (Groth16)"
+      },
+      "pool": {
+        "title": "Pool State",
+        "totalDeposits": "Total Deposits",
+        "totalValue": "Total Value (ETH)",
+        "denomination": "Denomination (ETH)",
+        "anonymitySet": "Anonymity Set",
+        "recentDeposits": "Recent Deposits"
+      },
+      "poolStatus": {
+        "title": "Pool Status",
+        "denomination": "Denomination",
+        "deposits": "Deposits"
+      },
+      "contractInfo": {
+        "title": "Contract Info",
+        "network": "Network",
+        "verifier": "Verifier",
+        "mixerContract": "Mixer Contract",
+        "notDeployed": "Not deployed",
+        "viewOnBasescan": "View on Basescan"
+      },
+      "steps": {
+        "generatingSecrets": "Generating nullifier and secret...",
+        "computingCommitment": "Computing commitment...",
+        "submittingDeposit": "Submitting deposit...",
+        "depositComplete": "Deposit complete!",
+        "buildingTree": "Building Merkle tree...",
+        "generatingMerkle": "Generating Merkle proof...",
+        "computingNullifier": "Computing nullifier hash...",
+        "preparingInputs": "Preparing circuit inputs...",
+        "generatingProof": "Generating ZK proof...",
+        "verifyingProof": "Verifying proof...",
+        "formattingProof": "Formatting proof for Solidity...",
+        "complete": "Complete!",
+        "withdrawing": "Withdrawing...",
+        "withdrawComplete": "Withdrawal complete!"
+      },
+      "privacy": {
+        "title": "Privacy Analysis",
+        "hidden": {
+          "title": "What's Hidden",
+          "item1": "Which deposit you made",
+          "item2": "Link between deposit/withdrawal addresses",
+          "item3": "Your nullifier preimage"
+        },
+        "proven": {
+          "title": "What's Proven",
+          "item1": "You made a valid deposit",
+          "item2": "You haven't withdrawn before",
+          "item3": "Correct denomination"
+        }
+      }
+    },
+    "privateClub": {
+      "badge": "Live Demo - Base Sepolia",
+      "title": "Private Club Membership",
+      "description": "Deploy contracts, join clubs, and prove membership with ZK proofs on Base Sepolia",
+      "walletConnection": "Wallet Connection",
+      "realBlockchainAlert": {
+        "title": "Real Blockchain Demo",
+        "description": "This demo deploys real contracts to Base Sepolia. You need testnet ETH from"
+      },
+      "tabs": {
+        "demo": "Demo",
+        "howItWorks": "How It Works"
+      },
+      "progress": {
+        "title": "Progress",
+        "deployContracts": "Deploy Contracts",
+        "joinClub": "Join Club",
+        "updateRoot": "Update Merkle Root",
+        "verifyAccess": "Verify Access",
+        "accessDenied": "Access Denied",
+        "accessGranted": "Access Granted"
+      },
+      "join": {
+        "title": "Join Club",
+        "description": "Register as a club member with a tier",
+        "selectTier": "Select Membership Tier",
+        "button": "Join Club",
+        "success": "Membership Registered on-chain!",
+        "memberSince": "Member since",
+        "commitment": "Member Commitment:",
+        "connectWallet": "Connect wallet to join"
+      },
+      "access": {
+        "title": "Access Control",
+        "description": "Prove membership to perform actions",
+        "minTier": "Minimum Tier Required",
+        "actions": {
+          "voteOnProposal": "Vote",
+          "accessPremiumContent": "Premium",
+          "joinExclusiveChat": "Chat",
+          "claimReward": "Reward"
+        },
+        "granted": "Access Granted!",
+        "denied": "Access Denied",
+        "grantedDesc": "Proven on-chain: You are a member with sufficient tier.",
+        "deniedDesc": "Your tier is below {minTier} requirement.",
+        "proofValid": "Proof Valid:",
+        "nullifier": "Action Nullifier:",
+        "showProof": "Show Proof Details",
+        "hideProof": "Hide Proof Details",
+        "proofData": "Proof Data (Groth16)"
+      },
+      "members": {
+        "title": "Club Members"
+      },
+      "steps": {
+        "generatingIdentity": "Generating member identity...",
+        "computingCommitment": "Computing member commitment...",
+        "registeringMember": "Registering member on-chain...",
+        "waitingConfirmation": "Waiting for confirmation...",
+        "updatingMerkleRoot": "Updating Merkle root on-chain...",
+        "submittingOnChain": "Submitting proof to blockchain...",
+        "complete": "Complete!",
+        "buildingTree": "Building membership tree...",
+        "generatingMerkle": "Generating Merkle proof...",
+        "computingNullifier": "Computing action nullifier...",
+        "preparingInputs": "Preparing circuit inputs...",
+        "generatingProof": "Generating ZK proof...",
+        "verifyingProof": "Verifying proof...",
+        "formattingProof": "Formatting proof for Solidity...",
+        "accessGranted": "Access granted on-chain!",
+        "accessDenied": "Access denied"
+      },
+      "stats": {
+        "title": "Club Stats",
+        "totalMembers": "Total Members",
+        "vipMembers": "VIP Members",
+        "yourTier": "Your Tier",
+        "notMember": "Not a Member"
+      },
+      "contractInfo": {
+        "title": "Contract Info",
+        "network": "Network",
+        "verifier": "Verifier",
+        "clubContract": "Club Contract",
+        "notDeployed": "Not deployed",
+        "viewOnBasescan": "View on Basescan"
+      },
+      "privacy": {
+        "title": "Privacy Features",
+        "anonymous": {
+          "title": "Anonymous Membership",
+          "description": "Prove you're A member without revealing WHICH member"
+        },
+        "attributes": {
+          "title": "Selective Disclosure",
+          "description": "Prove tier/join date without revealing other info"
+        },
+        "rateLimit": {
+          "title": "Rate Limiting",
+          "description": "Nullifiers prevent same member from repeating actions"
+        }
+      }
     }
   },
   "education": {

@@ -1,0 +1,1 @@
+export { PasswordProofDemo } from "./PasswordProofDemo";

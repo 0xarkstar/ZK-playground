@@ -17,6 +17,7 @@ import { useTheme } from "next-themes";
 import { useState, useEffect } from "react";
 import { useTranslations } from "next-intl";
 import { LanguageSwitcher } from "./LanguageSwitcher";
+import { ConnectButton } from "@rainbow-me/rainbowkit";
 
 export function Header() {
   const t = useTranslations("nav");
@@ -53,6 +54,19 @@ export function Header() {
       name: t("demo"),
       href: "/demo/voting",
       icon: Vote,
+      children: [
+        { name: t("voting"), href: "/demo/voting" },
+        { name: t("hashPreimage"), href: "/demo/hash-preimage" },
+        { name: t("ageVerification"), href: "/demo/age-verification" },
+        { name: t("passwordProof"), href: "/demo/password-proof" },
+        { name: t("sudoku"), href: "/demo/sudoku" },
+        { name: t("mastermind"), href: "/demo/mastermind" },
+        { name: t("airdrop"), href: "/demo/airdrop" },
+        { name: t("credential"), href: "/demo/credential" },
+        { name: t("auction"), href: "/demo/auction" },
+        { name: t("mixer"), href: "/demo/mixer" },
+        { name: t("privateClub"), href: "/demo/private-club" },
+      ],
     },
   ];
 
@@ -109,6 +123,24 @@ export function Header() {
         </div>
 
         <div className="flex items-center space-x-2">
+          <div className="hidden sm:block">
+            <ConnectButton
+              chainStatus="icon"
+              showBalance={false}
+              accountStatus={{
+                smallScreen: "avatar",
+                largeScreen: "full",
+              }}
+            />
+          </div>
+          <div className="sm:hidden">
+            <ConnectButton
+              chainStatus="none"
+              showBalance={false}
+              accountStatus="avatar"
+            />
+          </div>
+
           <LanguageSwitcher />
 
           {mounted && (

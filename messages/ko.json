@@ -13,7 +13,16 @@
     "viewOn": "에서 보기",
     "learnMore": "더 알아보기",
     "votes": "표",
-    "totalVotes": "총 투표 수"
+    "totalVotes": "총 투표 수",
+    "walletRequired": "지갑 연결 필요",
+    "walletRequiredDescription": "이 데모는 블록체인의 스마트 컨트랙트와 상호작용하기 위해 지갑 연결이 필요합니다. 계속하려면 지갑을 연결해주세요.",
+    "testnetAlert": "테스트넷 데모",
+    "testnetAlertDescription": "이 데모는 Base Sepolia 테스트넷에서 실행됩니다. 가스비를 위한 테스트 ETH가 필요합니다. 무료 테스트 ETH는",
+    "connectedWallet": "연결된 지갑",
+    "simulationMode": "시뮬레이션 모드",
+    "simulationModeDescription": "이 데모는 블록체인 상호작용을 로컬에서 시뮬레이션합니다. ZK 회로가 아직 온체인 배포용으로 컴파일되지 않았습니다.",
+    "liveMode": "라이브",
+    "circuitReady": "회로 준비됨"
   },
   "nav": {
     "education": "교육",
@@ -23,7 +32,18 @@
     "stark": "zk-STARK",
     "comparison": "비교",
     "circuit": "회로",
-    "proofProcess": "증명 과정"
+    "proofProcess": "증명 과정",
+    "voting": "투표",
+    "hashPreimage": "해시 원상",
+    "ageVerification": "나이 인증",
+    "passwordProof": "비밀번호 증명",
+    "sudoku": "스도쿠",
+    "mastermind": "마스터마인드",
+    "airdrop": "에어드롭",
+    "credential": "자격증명",
+    "auction": "경매",
+    "mixer": "믹서",
+    "privateClub": "프라이빗 클럽"
   },
   "home": {
     "badge": "영지식 증명 학습",
@@ -295,6 +315,845 @@
     "errors": {
       "walletNotConnected": "지갑이 연결되지 않음",
       "walletOrContractNotReady": "지갑이 연결되지 않았거나 컨트랙트가 배포되지 않음"
+    },
+    "hashPreimage": {
+      "badge": "초급 데모",
+      "title": "해시 원상 증명",
+      "description": "비밀 값을 공개하지 않고 알려진 해시로 해싱되는 비밀 값을 알고 있음을 증명",
+      "intro": {
+        "title": "해시 원상 증명 작동 방식",
+        "description": "이 데모는 핵심 ZK 개념을 보여줍니다: 비밀 자체를 공개하지 않고 알려진 해시를 생성하는 비밀에 대한 지식을 증명합니다."
+      },
+      "step1": {
+        "title": "해시 커밋먼트 생성",
+        "secretLabel": "당신의 비밀",
+        "secretPlaceholder": "비밀 값을 입력하세요...",
+        "secretHint": "이 값은 검증자에게 절대 공개되지 않습니다",
+        "computeButton": "해시 계산",
+        "hashResult": "Poseidon 해시"
+      },
+      "step2": {
+        "title": "지식 검증",
+        "hashLabel": "검증할 해시",
+        "hashPlaceholder": "0x...",
+        "hashHint": "원상을 알고 있다고 주장하는 공개 해시입니다",
+        "verifyButton": "증명 생성 및 검증"
+      },
+      "steps": {
+        "convertingToField": "비밀을 필드 요소로 변환 중...",
+        "computingPoseidon": "Poseidon 해시 계산 중...",
+        "formattingHash": "해시 출력 포맷팅 중...",
+        "complete": "완료!",
+        "generatingWitness": "증인 생성 중...",
+        "computingProof": "ZK 증명 계산 중...",
+        "verifyingProof": "증명 검증 중...",
+        "verified": "증명 검증됨!",
+        "failed": "증명 실패!"
+      },
+      "result": {
+        "verified": "증명 검증됨!",
+        "failed": "증명 실패",
+        "verifiedDesc": "원상을 공개하지 않고 지식을 증명했습니다.",
+        "failedDesc": "제공된 비밀이 해시와 일치하지 않습니다.",
+        "proofTime": "증명 시간"
+      },
+      "howItWorks": {
+        "title": "작동 방식",
+        "step1": {
+          "title": "비밀 해싱",
+          "description": "비밀은 ZK 친화적 해시 함수인 Poseidon을 사용하여 해싱됩니다."
+        },
+        "step2": {
+          "title": "증명 생성",
+          "description": "해시의 원상을 알고 있음을 보여주는 ZK 증명이 생성됩니다."
+        },
+        "step3": {
+          "title": "공개 없이 검증",
+          "description": "누구나 비밀을 알지 못한 채 증명을 검증할 수 있습니다."
+        }
+      },
+      "privacy": {
+        "title": "프라이버시 보장",
+        "description": "검증자는 공개 해시로 해싱되는 값을 알고 있다는 것만 알게 됩니다. 무한한 계산 능력이 있어도 비밀이 무엇인지 알 수 없습니다.",
+        "tags": {
+          "zeroKnowledge": "영지식",
+          "poseidonHash": "Poseidon 해시",
+          "noSecretLeaked": "비밀 유출 없음"
+        }
+      }
+    },
+    "ageVerification": {
+      "badge": "초급 데모",
+      "title": "나이 인증",
+      "description": "정확한 생년월일을 공개하지 않고 특정 나이 이상임을 증명",
+      "intro": {
+        "title": "프라이빗 나이 인증",
+        "description": "정확한 나이나 생년월일을 공개하지 않고 나이 요건(예: 18세 이상)을 충족함을 증명합니다. 연령 제한 콘텐츠 및 서비스에 적합합니다."
+      },
+      "step1": {
+        "title": "신원 정보",
+        "birthdateLabel": "생년월일",
+        "hiddenBirthdate": "프라이버시를 위해 생년월일 숨김",
+        "year": "년",
+        "month": "월",
+        "day": "일",
+        "calculatedAge": "당신의 나이",
+        "years": "세",
+        "generateButton": "신원 커밋먼트 생성",
+        "commitmentCreated": "신원 커밋먼트 생성됨"
+      },
+      "step2": {
+        "title": "나이 요건 검증",
+        "thresholdLabel": "최소 필요 나이",
+        "verifyButton": "나이 요건 충족 증명"
+      },
+      "steps": {
+        "hashingBirthdate": "생년월일 구성 요소 해싱 중...",
+        "creatingCommitment": "신원 커밋먼트 생성 중...",
+        "complete": "완료!",
+        "computingAge": "생년월일로부터 나이 계산 중...",
+        "verifyingIdentity": "신원 커밋먼트 검증 중...",
+        "checkingThreshold": "나이 임계값 확인 중...",
+        "generatingProof": "ZK 증명 생성 중...",
+        "verified": "나이 검증됨!",
+        "failed": "나이 검증 실패"
+      },
+      "result": {
+        "verified": "나이 검증됨!",
+        "failed": "나이 요건 미충족",
+        "verifiedDesc": "증명됨: 정확한 나이 공개 없이 나이 >= {threshold}",
+        "failedDesc": "나이 >= {threshold}를 증명할 수 없음",
+        "proofTime": "증명 시간"
+      },
+      "revealed": {
+        "title": "공개되는 정보",
+        "public": "공개 (보임)",
+        "publicItems": {
+          "threshold": "나이 임계값 (예: 18)",
+          "result": "합격/불합격 결과",
+          "commitment": "신원 커밋먼트 (해시)"
+        },
+        "private": "비공개 (숨김)",
+        "privateItems": {
+          "birthdate": "정확한 생년월일",
+          "exactAge": "정확한 나이",
+          "identity": "신원"
+        }
+      },
+      "useCases": {
+        "title": "사용 사례",
+        "items": {
+          "alcohol": {
+            "title": "주류 구매",
+            "description": "구매를 위한 21세 이상 증명"
+          },
+          "content": {
+            "title": "성인 콘텐츠",
+            "description": "신분증 업로드 없이 연령 제한"
+          },
+          "voting": {
+            "title": "투표 자격",
+            "description": "투표 연령(18세 이상) 증명"
+          },
+          "insurance": {
+            "title": "보험",
+            "description": "연령 기반 자격"
+          }
+        }
+      }
+    },
+    "passwordProof": {
+      "badge": "초급 데모",
+      "title": "비밀번호 증명",
+      "description": "네트워크를 통해 비밀번호를 전송하지 않고 인증",
+      "intro": {
+        "title": "영지식 인증",
+        "description": "비밀번호를 서버로 보내지 않고 알고 있음을 증명합니다. 서버가 해킹되어도 비밀번호를 훔칠 수 없습니다."
+      },
+      "tabs": {
+        "register": "등록",
+        "login": "로그인"
+      },
+      "comparison": {
+        "traditional": {
+          "title": "전통적 인증",
+          "item1": "비밀번호가 서버로 전송됨",
+          "item2": "서버가 비밀번호 해시 저장",
+          "item3": "가로채기에 취약"
+        },
+        "zkBased": {
+          "title": "ZK 기반 인증",
+          "item1": "비밀번호가 기기를 떠나지 않음",
+          "item2": "증명만 서버로 전송",
+          "item3": "서버조차 비밀번호를 알 수 없음"
+        }
+      },
+      "register": {
+        "title": "비밀번호 등록",
+        "passwordLabel": "비밀번호 선택",
+        "passwordPlaceholder": "강력한 비밀번호를 입력하세요...",
+        "passwordHint": "이 비밀번호는 절대 전송되지 않습니다",
+        "registerButton": "등록 (해시 저장)",
+        "success": "비밀번호 등록됨!",
+        "storedHash": "저장된 해시:",
+        "salt": "솔트:",
+        "securityNote": "해시만 저장됩니다. 비밀번호는 저장되거나 전송되지 않습니다.",
+        "resetButton": "데모 리셋"
+      },
+      "login": {
+        "title": "증명으로 로그인",
+        "passwordLabel": "비밀번호 입력",
+        "passwordPlaceholder": "비밀번호를 입력하세요...",
+        "authenticateButton": "ZK 증명으로 인증"
+      },
+      "steps": {
+        "generatingSalt": "랜덤 솔트 생성 중...",
+        "hashingPassword": "Poseidon으로 비밀번호 해싱 중...",
+        "storingHash": "해시 저장 중...",
+        "registrationComplete": "등록 완료!",
+        "preparingProof": "증명 입력 준비 중...",
+        "computingHash": "비밀번호 해시 계산 중...",
+        "generatingProof": "ZK 증명 생성 중...",
+        "verifyingProof": "증명 검증 중...",
+        "authSuccess": "인증 성공!",
+        "authFailed": "인증 실패"
+      },
+      "result": {
+        "success": "인증 성공!",
+        "failed": "인증 실패",
+        "successDesc": "증명됨: 비밀번호를 공개하지 않고 올바른 비밀번호를 알고 있음.",
+        "failedDesc": "비밀번호 증명이 검증되지 않았습니다. 잘못된 비밀번호?",
+        "proofTime": "증명 시간"
+      },
+      "security": {
+        "title": "보안 기능",
+        "features": {
+          "salted": {
+            "title": "솔트 해싱",
+            "description": "랜덤 솔트가 레인보우 테이블 공격 방지"
+          },
+          "zkProof": {
+            "title": "ZK 증명",
+            "description": "전송 없이 비밀번호 지식 증명"
+          },
+          "poseidon": {
+            "title": "Poseidon 해시",
+            "description": "효율적인 증명을 위한 ZK 친화적 해시 함수"
+          }
+        }
+      }
+    },
+    "sudoku": {
+      "badge": "중급 데모",
+      "title": "스도쿠 검증기",
+      "description": "해답을 공개하지 않고 스도쿠 퍼즐을 풀었음을 증명",
+      "intro": {
+        "title": "프라이빗 퍼즐 해답",
+        "description": "유효한 스도쿠 해답을 보여주지 않고 알고 있음을 증명합니다. 대회와 기술 검증에 적합합니다."
+      },
+      "grid": {
+        "title": "스도쿠 퍼즐",
+        "reset": "리셋"
+      },
+      "verify": {
+        "title": "해답 검증",
+        "description": "해답이 유효하다는 ZK 증명을 생성합니다",
+        "button": "해답 검증",
+        "proven": "증명되는 것",
+        "provenItems": {
+          "valid": "해답이 유효한 스도쿠임",
+          "matches": "해답이 퍼즐 단서와 일치함"
+        },
+        "hidden": "숨겨지는 것",
+        "hiddenItems": {
+          "solution": "실제 해답 값들"
+        }
+      },
+      "steps": {
+        "checkingClues": "해답이 단서와 일치하는지 확인 중...",
+        "checkingRows": "행 검증 중...",
+        "checkingCols": "열 검증 중...",
+        "checkingBoxes": "3x3 박스 검증 중...",
+        "generatingProof": "ZK 증명 생성 중...",
+        "verified": "해답 검증됨!",
+        "failed": "유효하지 않은 해답"
+      },
+      "result": {
+        "verified": "유효한 해답!",
+        "failed": "유효하지 않은 해답",
+        "verifiedDesc": "증명됨: 해답을 공개하지 않고 유효한 해답을 알고 있음.",
+        "failedDesc": "해답이 모든 스도쿠 제약 조건을 만족하지 않습니다."
+      },
+      "useCases": {
+        "title": "사용 사례",
+        "competitions": {
+          "title": "대회",
+          "description": "퍼즐을 스포일하지 않고 풀이 능력 증명"
+        },
+        "gaming": {
+          "title": "게임",
+          "description": "검증 가능한 퍼즐 업적"
+        },
+        "education": {
+          "title": "교육",
+          "description": "부정행위 없이 기술 증명"
+        }
+      }
+    },
+    "mastermind": {
+      "badge": "라이브 데모 - Base Sepolia",
+      "title": "마스터마인드 게임",
+      "description": "컨트랙트 배포, 비밀 코드 커밋, Base Sepolia에서 ZK 증명으로 힌트 검증",
+      "walletConnection": "지갑 연결",
+      "realBlockchainAlert": {
+        "title": "실제 블록체인 데모",
+        "description": "이 데모는 Base Sepolia에 실제 컨트랙트를 배포합니다. 테스트넷 ETH가 필요합니다:"
+      },
+      "tabs": {
+        "demo": "데모",
+        "howItWorks": "작동 방식"
+      },
+      "adminControls": {
+        "title": "게임 관리",
+        "codeSetter": "코드 설정자",
+        "gameStatus": "게임 상태",
+        "gameActive": "게임 진행 중",
+        "gameNotActive": "활성 게임 없음",
+        "active": "활성",
+        "inactive": "비활성",
+        "resetGame": "게임 초기화"
+      },
+      "progress": {
+        "title": "진행 상황",
+        "deployContracts": "컨트랙트 배포",
+        "commitCode": "코드 커밋",
+        "startGame": "게임 시작",
+        "makeGuess": "추측하기",
+        "verifyHints": "힌트 검증",
+        "complete": "완료"
+      },
+      "codeSetter": {
+        "title": "코드 설정자",
+        "secretCode": "비밀 코드 (클릭하여 변경)",
+        "commitButton": "코드 커밋",
+        "committed": "코드가 온체인에 커밋됨!"
+      },
+      "guesser": {
+        "title": "추측자",
+        "yourGuess": "당신의 추측",
+        "submitGuess": "추측 제출",
+        "previousGuesses": "이전 추측들",
+        "won": "승리!",
+        "wonDesc": "{attempts}번 시도 만에 코드를 맞췄습니다!",
+        "playAgain": "다시 플레이",
+        "showProof": "증명 세부정보 보기",
+        "hideProof": "증명 세부정보 숨기기",
+        "proofData": "증명 데이터 (Groth16)"
+      },
+      "steps": {
+        "generatingSalt": "솔트 생성 중...",
+        "computingCommitment": "코드 커밋먼트 계산 중...",
+        "submittingOnChain": "블록체인에 제출 중...",
+        "waitingConfirmation": "확인 대기 중...",
+        "complete": "완료!",
+        "computingHint": "힌트 계산 중...",
+        "preparingInputs": "회로 입력 준비 중...",
+        "generatingProof": "ZK 증명 생성 중...",
+        "verifyingProof": "증명 검증 중...",
+        "formattingProof": "Solidity 형식으로 증명 변환 중...",
+        "verified": "힌트가 온체인에서 검증됨!"
+      },
+      "stats": {
+        "title": "게임 통계",
+        "guesses": "추측 횟수",
+        "verified": "체인에서 검증됨",
+        "gameStatus": "게임 상태",
+        "won": "승리!",
+        "inProgress": "진행 중",
+        "notStarted": "시작 전"
+      },
+      "contractInfo": {
+        "title": "컨트랙트 정보",
+        "network": "네트워크",
+        "verifier": "검증자",
+        "gameContract": "게임 컨트랙트",
+        "notDeployed": "배포 안됨",
+        "viewOnBasescan": "Basescan에서 보기"
+      },
+      "howItWorks": {
+        "title": "ZK 보장",
+        "zkGuarantees": "ZK가 제공하는 것",
+        "items": {
+          "commitment": "코드 설정자가 게임 중 코드 변경 불가",
+          "hints": "모든 힌트가 수학적으로 정확",
+          "noCheat": "어느 플레이어도 부정행위 불가"
+        },
+        "legend": "힌트 범례",
+        "blackPeg": "정확한 색상, 정확한 위치",
+        "whitePeg": "정확한 색상, 잘못된 위치"
+      }
+    },
+    "airdrop": {
+      "badge": "라이브 데모 - Base Sepolia",
+      "title": "프라이빗 에어드롭",
+      "description": "컨트랙트 배포, 자격 등록, Base Sepolia에서 익명으로 토큰 클레임",
+      "walletConnection": "지갑 연결",
+      "realBlockchainAlert": {
+        "title": "실제 블록체인 데모",
+        "description": "이 데모는 Base Sepolia에 실제 컨트랙트를 배포합니다. 테스트넷 ETH가 필요합니다."
+      },
+      "tabs": {
+        "demo": "데모",
+        "howItWorks": "작동 원리"
+      },
+      "adminControls": {
+        "title": "관리자 컨트롤",
+        "owner": "소유자",
+        "airdropStatus": "에어드롭 상태",
+        "airdropActive": "에어드롭 활성화됨",
+        "airdropNotActive": "에어드롭 시작되지 않음",
+        "active": "활성",
+        "inactive": "비활성",
+        "initializeAirdrop": "에어드롭 초기화",
+        "endAirdrop": "에어드롭 종료",
+        "registerFirst": "먼저 최소 한 개의 자격 주소를 등록하세요"
+      },
+      "progress": {
+        "title": "진행 상황",
+        "deployContracts": "컨트랙트 배포",
+        "registerEligibility": "자격 등록",
+        "initializeAirdrop": "에어드롭 초기화",
+        "generateProof": "증명 생성",
+        "claimAirdrop": "에어드롭 클레임",
+        "complete": "완료"
+      },
+      "setup": {
+        "title": "자격 등록",
+        "description": "에어드롭 자격을 등록하세요",
+        "button": "등록",
+        "registered": "등록됨",
+        "yourCommitment": "당신의 커밋먼트",
+        "leafIndex": "리프 인덱스"
+      },
+      "claim": {
+        "title": "증명 생성",
+        "description": "익명으로 클레임하기 위한 ZK 증명을 생성합니다",
+        "button": "증명 생성",
+        "proofGenerated": "증명 생성됨",
+        "nullifier": "널리파이어",
+        "generating": "생성 중..."
+      },
+      "submit": {
+        "title": "클레임 제출",
+        "button": "에어드롭 클레임",
+        "claimed": "클레임 성공!",
+        "amount": "금액",
+        "claimAmount": "클레임 금액",
+        "viewTx": "트랜잭션 보기"
+      },
+      "steps": {
+        "generatingSecret": "신원 비밀 생성 중...",
+        "computingCommitment": "커밋먼트 계산 중...",
+        "buildingTree": "머클 트리 구축 중...",
+        "computingRoot": "루트 계산 중...",
+        "complete": "완료!",
+        "generatingProof": "ZK 증명 생성 중...",
+        "computingNullifier": "널리파이어 계산 중...",
+        "verifyingProof": "증명 검증 중...",
+        "generatingMerkle": "머클 증명 생성 중...",
+        "preparingInputs": "회로 입력 준비 중...",
+        "formattingProof": "Solidity용 증명 포맷 중..."
+      },
+      "stats": {
+        "title": "에어드롭 통계",
+        "totalClaimed": "총 클레임",
+        "claimCount": "클레임 수",
+        "remaining": "잔액",
+        "eligible": "자격자"
+      },
+      "contractInfo": {
+        "title": "컨트랙트 정보",
+        "network": "네트워크",
+        "verifier": "검증자",
+        "airdropContract": "에어드롭 컨트랙트",
+        "notDeployed": "배포되지 않음",
+        "viewOnBasescan": "Basescan에서 보기"
+      },
+      "privacy": {
+        "title": "작동 원리",
+        "hidden": {
+          "title": "숨겨지는 것",
+          "item1": "당신의 신원 (어떤 커밋먼트를 소유하는지)",
+          "item2": "당신의 비밀 키"
+        },
+        "proven": {
+          "title": "증명되는 것",
+          "item1": "자격 목록에 있음 (머클 증명)",
+          "item2": "이전에 클레임하지 않음 (널리파이어)"
+        }
+      }
+    },
+    "credential": {
+      "badge": "중급 데모",
+      "title": "자격증명 증명",
+      "description": "신원이나 전체 자격증명 세부사항을 공개하지 않고 자격 증명",
+      "intro": {
+        "title": "익명 자격증명 검증",
+        "description": "누구인지 공개하지 않고 유효한 자격증명(학위, 인증서)을 보유하고 있음을 증명합니다."
+      },
+      "issue": {
+        "title": "자격증명 발급",
+        "type": "자격증명 유형",
+        "issuer": "발급 기관",
+        "level": "자격 수준",
+        "button": "자격증명 발급",
+        "success": "자격증명 발급됨!",
+        "credentialHash": "자격증명 해시:"
+      },
+      "verify": {
+        "title": "자격증명 검증",
+        "description": "자격증명이 요건을 충족함을 증명",
+        "minLevel": "필요한 최소 수준",
+        "button": "ZK 증명으로 검증",
+        "verified": "자격증명 검증됨!",
+        "failed": "검증 실패",
+        "verifiedDesc": "증명됨: 요건을 충족하는 유효한 자격증명을 보유하고 있음.",
+        "failedDesc": "자격증명이 최소 수준을 충족함을 증명할 수 없음."
+      },
+      "steps": {
+        "generatingCredential": "자격증명 데이터 생성 중...",
+        "computingHash": "자격증명 해시 계산 중...",
+        "signingCredential": "자격증명 서명 중...",
+        "complete": "완료!",
+        "verifyingSignature": "발급자 서명 검증 중...",
+        "checkingAttributes": "속성 확인 중...",
+        "generatingProof": "ZK 증명 생성 중...",
+        "verified": "검증됨!",
+        "failed": "실패"
+      },
+      "useCases": {
+        "title": "사용 사례",
+        "hiring": {
+          "title": "취업 지원",
+          "description": "신원을 공개하지 않고 자격 증명"
+        },
+        "education": {
+          "title": "학력 검증",
+          "description": "익명으로 학위 검증"
+        },
+        "licensing": {
+          "title": "전문 자격증",
+          "description": "프라이빗하게 인증서 증명"
+        }
+      }
+    },
+    "auction": {
+      "badge": "라이브 데모 - Base Sepolia",
+      "title": "봉인 입찰 경매",
+      "description": "컨트랙트 배포, 입찰 커밋, Base Sepolia에서 ZK 증명으로 공개",
+      "walletConnection": "지갑 연결",
+      "realBlockchainAlert": {
+        "title": "실제 블록체인 데모",
+        "description": "이 데모는 Base Sepolia에 실제 컨트랙트를 배포합니다. 테스트넷 ETH가 필요합니다:"
+      },
+      "tabs": {
+        "demo": "데모",
+        "howItWorks": "작동 방식"
+      },
+      "progress": {
+        "title": "진행 상황",
+        "deployContracts": "컨트랙트 배포",
+        "createAuction": "경매 생성",
+        "commitBid": "입찰 커밋",
+        "generateProof": "증명 생성",
+        "revealBid": "입찰 공개",
+        "complete": "완료"
+      },
+      "createAuction": {
+        "title": "경매 생성",
+        "description": "ZK 검증 봉인 입찰 경매 생성.",
+        "button": "경매 생성"
+      },
+      "bid": {
+        "title": "봉인 입찰 제출",
+        "amount": "입찰 금액 (ETH)",
+        "button": "입찰 커밋",
+        "committed": "입찰 커밋됨",
+        "yourBid": "내 입찰"
+      },
+      "reveal": {
+        "title": "입찰 공개",
+        "generateProof": "증명 생성",
+        "proofReady": "증명 준비됨",
+        "button": "입찰 공개",
+        "revealed": "입찰 공개됨",
+        "generating": "생성 중...",
+        "viewTx": "트랜잭션 보기"
+      },
+      "auctionStatus": {
+        "title": "경매 상태",
+        "phase": "단계",
+        "bidders": "입찰자",
+        "winner": "낙찰자",
+        "winningBid": "낙찰 금액"
+      },
+      "contractInfo": {
+        "title": "컨트랙트 정보",
+        "network": "네트워크",
+        "verifier": "검증자",
+        "auctionContract": "경매 컨트랙트",
+        "notDeployed": "배포 안됨",
+        "viewOnBasescan": "Basescan에서 보기"
+      },
+      "steps": {
+        "generatingSalt": "솔트 생성 중...",
+        "computingCommitment": "입찰 커밋먼트 계산 중...",
+        "submittingCommitment": "커밋먼트 제출 중...",
+        "preparingInputs": "회로 입력 준비 중...",
+        "generatingProof": "ZK 증명 생성 중...",
+        "verifyingProof": "증명 검증 중...",
+        "formattingProof": "Solidity 형식으로 증명 변환 중...",
+        "complete": "완료!"
+      },
+      "privacy": {
+        "title": "작동 방식",
+        "hidden": {
+          "title": "숨겨지는 것",
+          "item1": "입찰 단계 중 실제 입찰 금액",
+          "item2": "입찰 솔트 (랜덤 비밀)"
+        },
+        "proven": {
+          "title": "증명되는 것",
+          "item1": "입찰이 최소/최대 범위 내",
+          "item2": "커밋먼트가 입찰 + 솔트와 일치"
+        }
+      }
+    },
+    "mixer": {
+      "badge": "라이브 데모 - Base Sepolia",
+      "title": "믹서 데모",
+      "description": "프라이버시 풀이 거래 연결을 끊는 방법 학습 (교육 목적만)",
+      "walletConnection": "지갑 연결",
+      "realBlockchainAlert": {
+        "title": "실제 블록체인 데모",
+        "description": "이 데모는 Base Sepolia에 실제 컨트랙트를 배포합니다. 테스트넷 ETH가 필요합니다:"
+      },
+      "disclaimer": {
+        "title": "교육용 면책 조항",
+        "description": "이 데모는 교육 목적으로만 사용됩니다. 암호화 개념을 보여줍니다. 법적 검토 없이 실제 프라이버시 애플리케이션에 사용하지 마세요."
+      },
+      "intro": {
+        "title": "믹서 이해하기",
+        "description": "ZK 증명이 널리파이어와 머클 증명을 사용하여 입금과 출금 사이의 연결을 끊는 방법을 학습합니다."
+      },
+      "tabs": {
+        "demo": "데모",
+        "howItWorks": "작동 방식"
+      },
+      "progress": {
+        "title": "진행 상황",
+        "deployContracts": "컨트랙트 배포",
+        "deposit": "입금",
+        "generateProof": "증명 생성",
+        "withdraw": "출금",
+        "complete": "완료"
+      },
+      "flow": {
+        "depositor": "입금자",
+        "depositAmount": "0.01 ETH",
+        "mixerPool": "믹서 풀",
+        "deposits": "입금",
+        "withdrawer": "출금자",
+        "unlinkable": "연결 불가"
+      },
+      "deposit": {
+        "title": "입금",
+        "description": "비밀을 생성하고 자금 입금",
+        "fixedAmount": "고정 금액",
+        "amount": "금액",
+        "button": "노트 생성 및 입금",
+        "deposited": "입금됨",
+        "success": "입금 완료!",
+        "nullifier": "널리파이어 (비밀 유지!):",
+        "secret": "비밀:",
+        "saveNote": "널리파이어와 비밀을 저장하세요! 출금에 필요합니다.",
+        "connectWallet": "입금하려면 지갑을 연결하세요"
+      },
+      "withdraw": {
+        "title": "출금",
+        "description": "ZK 증명으로 새 주소로 출금",
+        "recipient": "수신자 주소",
+        "button": "ZK 증명으로 출금",
+        "generateProof": "증명 생성",
+        "proofReady": "증명 준비됨",
+        "generating": "생성 중...",
+        "withdrawn": "출금됨",
+        "viewTx": "트랜잭션 보기",
+        "success": "출금 완료!",
+        "successDesc": "새 주소로 자금 전송됨. 입금과의 연결이 끊어졌습니다.",
+        "connectWallet": "출금하려면 지갑을 연결하세요",
+        "verified": "검증됨:",
+        "nullifier": "널리파이어 해시:",
+        "showProof": "증명 세부정보 보기",
+        "hideProof": "증명 세부정보 숨기기",
+        "proofData": "증명 데이터 (Groth16)"
+      },
+      "pool": {
+        "title": "풀 상태",
+        "totalDeposits": "총 입금",
+        "totalValue": "총 가치 (ETH)",
+        "denomination": "단위 (ETH)",
+        "anonymitySet": "익명성 집합",
+        "recentDeposits": "최근 입금"
+      },
+      "poolStatus": {
+        "title": "풀 상태",
+        "denomination": "단위",
+        "deposits": "입금 수"
+      },
+      "contractInfo": {
+        "title": "컨트랙트 정보",
+        "network": "네트워크",
+        "verifier": "검증자",
+        "mixerContract": "믹서 컨트랙트",
+        "notDeployed": "배포 안됨",
+        "viewOnBasescan": "Basescan에서 보기"
+      },
+      "steps": {
+        "generatingSecrets": "널리파이어와 비밀 생성 중...",
+        "computingCommitment": "커밋먼트 계산 중...",
+        "submittingDeposit": "입금 제출 중...",
+        "depositComplete": "입금 완료!",
+        "buildingTree": "머클 트리 구축 중...",
+        "generatingMerkle": "머클 증명 생성 중...",
+        "computingNullifier": "널리파이어 해시 계산 중...",
+        "preparingInputs": "회로 입력 준비 중...",
+        "generatingProof": "ZK 증명 생성 중...",
+        "verifyingProof": "증명 검증 중...",
+        "formattingProof": "Solidity 형식으로 증명 변환 중...",
+        "complete": "완료!",
+        "withdrawing": "출금 중...",
+        "withdrawComplete": "출금 완료!"
+      },
+      "privacy": {
+        "title": "프라이버시 분석",
+        "hidden": {
+          "title": "숨겨지는 것",
+          "item1": "어떤 입금을 했는지",
+          "item2": "입금/출금 주소 간 연결",
+          "item3": "널리파이어 원상"
+        },
+        "proven": {
+          "title": "증명되는 것",
+          "item1": "유효한 입금을 했음",
+          "item2": "이전에 출금하지 않았음",
+          "item3": "올바른 금액"
+        }
+      }
+    },
+    "privateClub": {
+      "badge": "라이브 데모 - Base Sepolia",
+      "title": "프라이빗 클럽 멤버십",
+      "description": "컨트랙트 배포, 클럽 가입, Base Sepolia에서 ZK 증명으로 멤버십 검증",
+      "walletConnection": "지갑 연결",
+      "realBlockchainAlert": {
+        "title": "실제 블록체인 데모",
+        "description": "이 데모는 Base Sepolia에 실제 컨트랙트를 배포합니다. 테스트넷 ETH가 필요합니다:"
+      },
+      "tabs": {
+        "demo": "데모",
+        "howItWorks": "작동 방식"
+      },
+      "progress": {
+        "title": "진행 상황",
+        "deployContracts": "컨트랙트 배포",
+        "joinClub": "클럽 가입",
+        "updateRoot": "머클 루트 업데이트",
+        "verifyAccess": "접근 검증",
+        "accessDenied": "접근 거부",
+        "accessGranted": "접근 허용"
+      },
+      "join": {
+        "title": "클럽 가입",
+        "description": "등급으로 클럽 멤버 등록",
+        "selectTier": "멤버십 등급 선택",
+        "button": "클럽 가입",
+        "success": "멤버십이 온체인에 등록됨!",
+        "memberSince": "가입일",
+        "commitment": "멤버 커밋먼트:",
+        "connectWallet": "가입하려면 지갑을 연결하세요"
+      },
+      "access": {
+        "title": "접근 제어",
+        "description": "액션 수행을 위한 멤버십 증명",
+        "minTier": "필요한 최소 등급",
+        "actions": {
+          "voteOnProposal": "투표",
+          "accessPremiumContent": "프리미엄",
+          "joinExclusiveChat": "채팅",
+          "claimReward": "보상"
+        },
+        "granted": "접근 허용!",
+        "denied": "접근 거부",
+        "grantedDesc": "온체인 증명: 충분한 등급의 멤버입니다.",
+        "deniedDesc": "등급이 {minTier} 요건 미만입니다.",
+        "proofValid": "증명 유효:",
+        "nullifier": "액션 널리파이어:",
+        "showProof": "증명 세부정보 보기",
+        "hideProof": "증명 세부정보 숨기기",
+        "proofData": "증명 데이터 (Groth16)"
+      },
+      "members": {
+        "title": "클럽 멤버"
+      },
+      "steps": {
+        "generatingIdentity": "멤버 신원 생성 중...",
+        "computingCommitment": "멤버 커밋먼트 계산 중...",
+        "registeringMember": "온체인에 멤버 등록 중...",
+        "waitingConfirmation": "확인 대기 중...",
+        "updatingMerkleRoot": "온체인에 머클 루트 업데이트 중...",
+        "submittingOnChain": "블록체인에 증명 제출 중...",
+        "complete": "완료!",
+        "buildingTree": "멤버십 트리 구축 중...",
+        "generatingMerkle": "머클 증명 생성 중...",
+        "computingNullifier": "액션 널리파이어 계산 중...",
+        "preparingInputs": "회로 입력 준비 중...",
+        "generatingProof": "ZK 증명 생성 중...",
+        "verifyingProof": "증명 검증 중...",
+        "formattingProof": "Solidity 형식으로 증명 변환 중...",
+        "accessGranted": "온체인에서 접근 허용!",
+        "accessDenied": "접근 거부"
+      },
+      "stats": {
+        "title": "클럽 통계",
+        "totalMembers": "총 멤버",
+        "vipMembers": "VIP 멤버",
+        "yourTier": "내 등급",
+        "notMember": "비멤버"
+      },
+      "contractInfo": {
+        "title": "컨트랙트 정보",
+        "network": "네트워크",
+        "verifier": "검증자",
+        "clubContract": "클럽 컨트랙트",
+        "notDeployed": "배포 안됨",
+        "viewOnBasescan": "Basescan에서 보기"
+      },
+      "privacy": {
+        "title": "프라이버시 기능",
+        "anonymous": {
+          "title": "익명 멤버십",
+          "description": "어떤 멤버인지가 아닌 멤버임을 증명"
+        },
+        "attributes": {
+          "title": "선택적 공개",
+          "description": "다른 정보 공개 없이 등급/가입일 증명"
+        },
+        "rateLimit": {
+          "title": "속도 제한",
+          "description": "널리파이어가 같은 멤버의 반복 액션 방지"
+        }
+      }
     }
   },
   "education": {

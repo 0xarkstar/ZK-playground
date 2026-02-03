@@ -25,6 +25,7 @@ import {
   RefreshCw,
 } from "lucide-react";
 import { useTranslations } from "next-intl";
+import { LiveBadge } from "@/components/demo/LiveBadge";
 
 interface VoterIdentity {
   secret: bigint;
@@ -264,9 +265,10 @@ export default function VotingDemoPage() {
   return (
     <div className="container mx-auto px-4 py-8 max-w-6xl">
       <div className="mb-8">
-        <Badge variant="secondary" className="mb-4">
-          {t("badge")}
-        </Badge>
+        <div className="flex items-center gap-2 mb-4">
+          <Badge variant="secondary">{t("badge")}</Badge>
+          <LiveBadge />
+        </div>
         <h1 className="text-3xl font-bold mb-2">{t("title")}</h1>
         <p className="text-muted-foreground text-lg">
           {t("description")}
