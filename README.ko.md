@@ -17,7 +17,7 @@ ZK Playground는 개발자들이 인터랙티브 학습과 실습을 통해 Zero
 
 - **교육 콘텐츠**: SNARK와 STARK 개념을 단계별로 학습
 - **인터랙티브 시각화**: 회로 구조와 증명 생성 플로우 탐색
-- **실제 데모**: 완전히 작동하는 ZK 기반 비밀 투표 애플리케이션
+- **11개 라이브 데모**: Base Sepolia에서 온체인 검증이 가능한 완전한 ZK 애플리케이션
 
 ## 주요 기능
 
@@ -31,10 +31,32 @@ ZK Playground는 개발자들이 인터랙티브 학습과 실습을 통해 Zero
 - 애니메이션 증명 생성 플로우
 - 실시간 제약 조건 시각화
 
-### 투표 데모
-- ZK 증명을 활용한 익명 투표
-- 머클 트리 멤버십 검증
-- 온체인 증명 검증 (Base Sepolia)
+### 라이브 데모 (Base Sepolia)
+
+모든 데모는 실제 스마트 컨트랙트 배포와 온체인 증명 검증을 지원합니다.
+
+#### 초급 데모
+| 데모 | 설명 | 회로 |
+|------|------|------|
+| **해시 프리이미지** | 해시의 원본 값을 공개하지 않고 알고 있음을 증명 | `hash_preimage.circom` |
+| **나이 인증** | 생년월일을 공개하지 않고 특정 나이 이상임을 증명 | `age_verification.circom` |
+| **비밀번호 증명** | 비밀번호를 전송하지 않고 인증 | `password_proof.circom` |
+| **스도쿠** | 해답을 공개하지 않고 스도쿠를 풀었음을 증명 | `sudoku.circom` |
+| **자격증명** | 신원을 공개하지 않고 자격을 증명 | `credential_proof.circom` |
+
+#### 중급 데모
+| 데모 | 설명 | 회로 |
+|------|------|------|
+| **비밀 투표** | 머클 트리 멤버십을 활용한 익명 투표 | `vote_demo.circom` |
+| **프라이빗 에어드롭** | 자격 증명으로 익명 토큰 수령 | `merkle_airdrop.circom` |
+| **마스터마인드** | ZK로 검증된 힌트를 제공하는 코드 추리 게임 | `mastermind.circom` |
+
+#### 고급 데모
+| 데모 | 설명 | 회로 |
+|------|------|------|
+| **믹서** | 프라이버시를 보장하는 토큰 전송 | `mixer_demo.circom` |
+| **프라이빗 클럽** | 익명 멤버십 검증 | `private_membership.circom` |
+| **비밀 경매** | 숨겨진 입찰가를 사용하는 커밋-공개 경매 | `sealed_bid.circom` |
 
 ## 기술 스택
 
@@ -60,21 +82,51 @@ zk-playground/
 │       ├── visualization/  # 회로 & 증명 시각화
 │       │   ├── circuit/
 │       │   └── proof/
-│       └── demo/
-│           └── voting/     # ZK 투표 데모
+│       └── demo/           # ZK 데모 애플리케이션
+│           ├── voting/         # 비밀 투표
+│           ├── hash-preimage/  # 해시 프리이미지 증명
+│           ├── age-verification/ # 나이 인증
+│           ├── password-proof/ # 비밀번호 인증
+│           ├── sudoku/         # 스도쿠 풀이 증명
+│           ├── credential/     # 자격증명 검증
+│           ├── airdrop/        # 프라이빗 에어드롭
+│           ├── mastermind/     # 마스터마인드 게임
+│           ├── mixer/          # 토큰 믹서
+│           ├── private-club/   # 프라이빗 멤버십
+│           └── auction/        # 비밀 입찰 경매
 ├── circuits/               # Circom ZK 회로
-│   ├── simple.circom       # 교육용 기본 회로
-│   ├── merkle.circom       # 머클 트리 유틸리티
-│   ├── vote.circom         # 기본 투표 회로
-│   └── vote_demo.circom    # 데모 투표 회로
+│   ├── hash_preimage.circom
+│   ├── age_verification.circom
+│   ├── password_proof.circom
+│   ├── sudoku.circom
+│   ├── credential_proof.circom
+│   ├── vote_demo.circom
+│   ├── merkle_airdrop.circom
+│   ├── mastermind.circom
+│   ├── mixer_demo.circom
+│   ├── private_membership.circom
+│   ├── sealed_bid.circom
+│   ├── merkle.circom       # 공유 머클 유틸리티
+│   ├── simple.circom       # 교육용 예제
+│   └── vote.circom         # 기본 투표 회로
 ├── contracts/              # Solidity 스마트 컨트랙트
-│   ├── SecretVoting.sol    # 투표 컨트랙트
-│   └── Groth16Verifier.sol # Groth16 증명 검증자
+│   ├── SecretVoting.sol
+│   ├── HashPreimageVerifier.sol
+│   ├── AgeVerifier.sol
+│   ├── PasswordVerifier.sol
+│   ├── SudokuVerifier.sol
+│   ├── CredentialVerifier.sol
+│   ├── PrivateAirdrop.sol
+│   ├── Mastermind.sol
+│   ├── Mixer.sol
+│   ├── PrivateClub.sol
+│   ├── SealedAuction.sol
+│   └── Groth16Verifier.sol # 생성된 검증자
 ├── lib/
 │   ├── zk/                 # ZK 유틸리티 (snarkjs, merkle, poseidon)
-│   └── web3/               # Web3 설정
+│   └── web3/               # Web3 설정 & 컨트랙트 ABI
 ├── components/             # React 컴포넌트
-│   ├── demo/               # 투표 데모 컴포넌트
+│   ├── demo/               # 데모별 컴포넌트
 │   ├── education/          # 교육 페이지 컴포넌트
 │   ├── visualization/      # 시각화 컴포넌트
 │   ├── layout/             # 레이아웃 컴포넌트
@@ -83,8 +135,9 @@ zk-playground/
 ├── messages/               # i18n 번역 파일
 │   ├── en.json
 │   └── ko.json
+├── build/                  # 컴파일된 회로 아티팩트
+│   └── [circuit]_js/       # WASM & witness 생성기
 ├── scripts/                # 배포 스크립트
-│   └── deploy.ts
 ├── test/                   # 컨트랙트 테스트
 └── e2e/                    # Playwright E2E 테스트
 ```
@@ -138,20 +191,26 @@ npm run test:e2e:headed
 
 ## ZK 회로 설명
 
-### vote_demo.circom
-다음을 결합한 메인 투표 회로:
-- 머클 트리 멤버십 증명 (투표 자격 검증)
-- 널리파이어 생성 (이중 투표 방지)
-- 투표 커밋먼트
+### 초급 회로
 
-### merkle.circom
-멤버십 증명을 위한 Poseidon 해시 기반 머클 트리 검증 유틸리티.
+| 회로 | 입력 | 공개 출력 | 설명 |
+|------|------|----------|------|
+| `hash_preimage.circom` | preimage | hash | 원본 값 지식 증명 |
+| `age_verification.circom` | birthdate, threshold | isEligible | 나이 요건 증명 |
+| `password_proof.circom` | password, salt | hash | 비밀번호 지식 증명 |
+| `sudoku.circom` | solution, puzzle | puzzleHash | 유효한 해답 증명 |
+| `credential_proof.circom` | credential, issuerSig | credentialType, threshold | 자격 증명 |
 
-### simple.circom
-다음을 포함한 교육용 회로:
-- Multiplier (기본 제약 조건 예제)
-- Range proof (범위 증명)
-- 기타 ZK 기본 빌딩 블록
+### 고급 회로
+
+| 회로 | 설명 |
+|------|------|
+| `vote_demo.circom` | 익명 투표를 위한 머클 멤버십 + 널리파이어 |
+| `merkle_airdrop.circom` | 프라이빗 토큰 수령을 위한 머클 증명 |
+| `mastermind.circom` | 코드 추리 게임의 힌트 검증 |
+| `mixer_demo.circom` | 널리파이어 추적을 사용한 입출금 |
+| `private_membership.circom` | 익명 그룹 멤버십 증명 |
+| `sealed_bid.circom` | 숨겨진 경매 입찰을 위한 커밋-공개 |
 
 ## 아키텍처
 
@@ -160,21 +219,21 @@ npm run test:e2e:headed
 │       프론트엔드 (Next.js)          │
 │    - 교육 콘텐츠                    │
 │    - 시각화                         │
-│    - 투표 UI                        │
+│    - 11개 인터랙티브 데모           │
 └─────────────────┬───────────────────┘
                   │ wagmi / RainbowKit
                   ▼
 ┌─────────────────────────────────────┐
 │  스마트 컨트랙트 (Base Sepolia)     │
-│    - SecretVoting.sol               │
-│    - Groth16Verifier.sol            │
+│    - 데모별 컨트랙트                │
+│    - Groth16Verifier 컨트랙트       │
 └─────────────────┬───────────────────┘
                   │ Groth16 증명 검증
                   ▲
 ┌─────────────────┴───────────────────┐
 │        ZK 회로 (Circom)             │
 │    - 클라이언트 사이드 증명 생성    │
-│    - SnarkJS 통합                   │
+│    - SnarkJS / WASM 통합            │
 └─────────────────────────────────────┘
 ```
 
@@ -199,7 +258,15 @@ npm run test:e2e:headed
 cp .env.example .env.local
 ```
 
-필요한 변수는 `.env.example` 파일을 참조하세요.
+필수 변수:
+- `NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID` - WalletConnect 프로젝트 ID
+- `PRIVATE_KEY` - 배포자 지갑 프라이빗 키 (컨트랙트 배포용)
+
+모든 옵션은 `.env.example` 파일을 참조하세요.
+
+## 기여하기
+
+기여를 환영합니다! Pull Request를 자유롭게 제출해 주세요.
 
 ## 라이선스
 

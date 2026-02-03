@@ -352,10 +352,10 @@
       },
       "result": {
         "verified": "Proof Verified!",
-        "failed": "Proof Failed",
+        "failed": "Failed",
         "verifiedDesc": "You have proven knowledge of the preimage without revealing it.",
         "failedDesc": "The provided secret does not match the hash.",
-        "proofTime": "Proof time"
+        "proofTime": "Proof Time"
       },
       "howItWorks": {
         "title": "How It Works",
@@ -381,7 +381,7 @@
           "noSecretLeaked": "No Secret Leaked"
         }
       },
-      "walletConnection": "Connect your wallet to deploy contracts and submit proofs on-chain",
+      "walletConnection": "Wallet Connection",
       "realBlockchainAlert": {
         "title": "Real Blockchain Transaction",
         "description": "This demo uses Base Sepolia testnet. You'll need testnet ETH to deploy contracts and submit proofs."
@@ -391,7 +391,8 @@
         "deployContracts": "Deploy Contracts",
         "computeHash": "Compute Hash",
         "generateProof": "Generate ZK Proof",
-        "submitProof": "Submit Proof On-Chain"
+        "submitProof": "Submit Proof",
+        "verified": "Verified"
       },
       "contractInfo": {
         "title": "Contract Info",
@@ -414,7 +415,19 @@
       "generateProofButton": "Generate ZK Proof",
       "proofGenerated": "Proof Generated!",
       "proofReadyToSubmit": "Your ZK proof is ready. Submit it on-chain for permanent verification.",
-      "proofDescription": "The proof demonstrates you know the preimage without revealing it."
+      "proofDescription": "The proof demonstrates you know the preimage without revealing it.",
+      "tabs": {
+        "demo": "Demo",
+        "howItWorks": "How It Works"
+      },
+      "stats": {
+        "title": "Stats",
+        "totalVerifications": "Total Verifications",
+        "proofGenerated": "Proof Generated",
+        "proofTime": "Proof Time",
+        "hashComputed": "Hash Computed"
+      },
+      "resetButton": "Try Again"
     },
     "ageVerification": {
       "badge": "Beginner Demo",
@@ -463,10 +476,10 @@
       },
       "result": {
         "verified": "Age Verified!",
-        "failed": "Age Requirement Not Met",
+        "failed": "Failed",
         "verifiedDesc": "Proven: Age >= {threshold} without revealing exact age",
         "failedDesc": "Could not prove age >= {threshold}",
-        "proofTime": "Proof time"
+        "proofTime": "Proof Time"
       },
       "revealed": {
         "title": "What Gets Revealed",
@@ -504,7 +517,7 @@
           }
         }
       },
-      "walletConnection": "Connect your wallet to deploy contracts and verify age on-chain",
+      "walletConnection": "Wallet Connection",
       "realBlockchainAlert": {
         "title": "Real Blockchain Transaction",
         "description": "This demo uses Base Sepolia testnet. You'll need testnet ETH to deploy contracts and submit proofs."
@@ -518,7 +531,8 @@
         "deployContracts": "Deploy Contracts",
         "enterBirthdate": "Enter Birthdate",
         "generateProof": "Generate ZK Proof",
-        "submitProof": "Submit Proof On-Chain"
+        "submitProof": "Submit Proof",
+        "verified": "Verified"
       },
       "contractInfo": {
         "title": "Contract Info",
@@ -564,19 +578,40 @@
           "rangeProof": "Range Proof",
           "noAgeRevealed": "No Age Revealed"
         }
-      }
+      },
+      "tabs": {
+        "demo": "Demo",
+        "howItWorks": "How It Works"
+      },
+      "stats": {
+        "title": "Stats",
+        "totalVerifications": "Total Verifications",
+        "proofGenerated": "Proof Generated",
+        "proofTime": "Proof Time"
+      },
+      "resetButton": "Try Again"
     },
     "passwordProof": {
       "badge": "Beginner Demo",
       "title": "Password Proof",
       "description": "Authenticate without ever transmitting your password over the network",
+      "tabs": {
+        "register": "Register",
+        "login": "Login",
+        "demo": "Demo",
+        "howItWorks": "How It Works"
+      },
+      "stats": {
+        "title": "Stats",
+        "passwordSet": "Password Set",
+        "proofGenerated": "Proof Generated",
+        "proofTime": "Proof Time",
+        "onChainVerified": "On-Chain Verified",
+        "totalVerifications": "Total Verifications"
+      },
       "intro": {
         "title": "Zero-Knowledge Authentication",
         "description": "Prove you know your password without sending it to the server. Even a compromised server cannot steal your password."
-      },
-      "tabs": {
-        "register": "Register",
-        "login": "Login"
       },
       "comparison": {
         "traditional": {
@@ -620,14 +655,15 @@
         "generatingProof": "Generating ZK proof...",
         "verifyingProof": "Verifying proof...",
         "authSuccess": "Authentication successful!",
-        "authFailed": "Authentication failed"
+        "authFailed": "Authentication failed",
+        "complete": "Verified"
       },
       "result": {
         "success": "Authentication Successful!",
-        "failed": "Authentication Failed",
+        "failed": "Failed",
         "successDesc": "Proven: You know the correct password without revealing it.",
         "failedDesc": "The password proof did not verify. Wrong password?",
-        "proofTime": "Proof time"
+        "proofTime": "Proof Time"
       },
       "security": {
         "title": "Security Features",
@@ -646,7 +682,7 @@
           }
         }
       },
-      "walletConnection": "Connect your wallet to deploy contracts and verify passwords on-chain",
+      "walletConnection": "Wallet Connection",
       "realBlockchainAlert": {
         "title": "Real Blockchain Transaction",
         "description": "This demo uses Base Sepolia testnet. You'll need testnet ETH to deploy contracts and submit proofs."
@@ -671,7 +707,8 @@
         "deployContracts": "Deploy Contracts",
         "enterPassword": "Enter Password",
         "generateProof": "Generate ZK Proof",
-        "submitProof": "Submit Proof On-Chain"
+        "submitProof": "Submit Proof",
+        "verified": "Verified"
       },
       "contractInfo": {
         "title": "Contract Info",
@@ -694,7 +731,7 @@
       "generateProofButton": "Generate ZK Proof",
       "proofGenerated": "Proof Generated!",
       "proofReadyToSubmit": "Your password proof is ready. Submit it on-chain for verification.",
-      "resetButton": "Try Another Password",
+      "resetButton": "Try Again",
       "howItWorks": {
         "title": "How It Works",
         "step1": {
@@ -724,6 +761,19 @@
       "badge": "Intermediate Demo",
       "title": "Sudoku Verifier",
       "description": "Prove you solved a Sudoku puzzle without revealing the solution",
+      "tabs": {
+        "demo": "Demo",
+        "howItWorks": "How It Works"
+      },
+      "stats": {
+        "title": "Stats",
+        "cellsFilled": "Cells Filled",
+        "puzzleComplete": "Puzzle Complete",
+        "proofGenerated": "Proof Generated",
+        "proofTime": "Proof Time",
+        "onChainVerified": "On-Chain Verified",
+        "totalVerifications": "Total Verifications"
+      },
       "intro": {
         "title": "Private Puzzle Solution",
         "description": "Demonstrate that you know a valid Sudoku solution without showing it. Perfect for competitions and skill verification."
@@ -757,9 +807,10 @@
       },
       "result": {
         "verified": "Valid Solution!",
-        "failed": "Invalid Solution",
+        "failed": "Failed",
         "verifiedDesc": "Proven: You know a valid solution without revealing it.",
-        "failedDesc": "The solution does not satisfy all Sudoku constraints."
+        "failedDesc": "The solution does not satisfy all Sudoku constraints.",
+        "proofTime": "Proof Time"
       },
       "useCases": {
         "title": "Use Cases",
@@ -776,7 +827,7 @@
           "description": "Demonstrate skill without cheating"
         }
       },
-      "walletConnection": "Connect your wallet to deploy contracts and verify Sudoku solutions on-chain",
+      "walletConnection": "Wallet Connection",
       "realBlockchainAlert": {
         "title": "Real Blockchain Transaction",
         "description": "This demo uses Base Sepolia testnet. You'll need testnet ETH to deploy contracts and submit proofs."
@@ -798,7 +849,8 @@
         "deployContracts": "Deploy Contracts",
         "solvePuzzle": "Solve Puzzle",
         "generateProof": "Generate ZK Proof",
-        "submitProof": "Submit Proof On-Chain"
+        "submitProof": "Submit Proof",
+        "verified": "Verified"
       },
       "contractInfo": {
         "title": "Contract Info",
@@ -821,13 +873,6 @@
       "generateProofButton": "Generate ZK Proof",
       "proofGenerated": "Proof Generated!",
       "proofReadyToSubmit": "Your Sudoku proof is ready. Submit it on-chain for verification.",
-      "result": {
-        "verified": "Valid Solution!",
-        "failed": "Invalid Solution",
-        "verifiedDesc": "Proven: You know a valid solution without revealing it.",
-        "failedDesc": "The solution does not satisfy all Sudoku constraints.",
-        "proofTime": "Proof time"
-      },
       "howItWorks": {
         "title": "How It Works",
         "step1": {
@@ -851,7 +896,8 @@
           "solutionHidden": "Solution Hidden",
           "validityProven": "Validity Proven"
         }
-      }
+      },
+      "resetButton": "Try Again"
     },
     "mastermind": {
       "badge": "Live Demo - Base Sepolia",
@@ -1050,6 +1096,20 @@
       "badge": "Intermediate Demo",
       "title": "Credential Proof",
       "description": "Prove your qualifications without revealing your identity or full credential details",
+      "tabs": {
+        "demo": "Demo",
+        "howItWorks": "How It Works"
+      },
+      "stats": {
+        "title": "Stats",
+        "credentialType": "Credential Type",
+        "minLevel": "Min Level",
+        "credentialSetup": "Credential Setup",
+        "proofGenerated": "Proof Generated",
+        "proofTime": "Proof Time",
+        "onChainVerified": "On-Chain Verified",
+        "totalVerifications": "Total Verifications"
+      },
       "intro": {
         "title": "Anonymous Credential Verification",
         "description": "Prove you hold a valid credential (degree, certification) without revealing who you are."
@@ -1099,7 +1159,7 @@
           "description": "Prove certifications privately"
         }
       },
-      "walletConnection": "Connect your wallet to deploy contracts and verify credentials on-chain",
+      "walletConnection": "Wallet Connection",
       "realBlockchainAlert": {
         "title": "Real Blockchain Transaction",
         "description": "This demo uses Base Sepolia testnet. You'll need testnet ETH to deploy contracts and submit proofs."
@@ -1123,7 +1183,8 @@
         "deployContracts": "Deploy Contracts",
         "setupCredential": "Setup Credential",
         "generateProof": "Generate ZK Proof",
-        "submitProof": "Submit Proof On-Chain"
+        "submitProof": "Submit Proof",
+        "verified": "Verified"
       },
       "contractInfo": {
         "title": "Contract Info",
@@ -1148,10 +1209,10 @@
       "proofReadyToSubmit": "Your credential proof is ready. Submit it on-chain for verification.",
       "result": {
         "verified": "Credential Verified!",
-        "failed": "Verification Failed",
+        "failed": "Failed",
         "verifiedDesc": "Proven: You hold a valid credential meeting the requirements.",
         "failedDesc": "Could not prove credential meets minimum level.",
-        "proofTime": "Proof time"
+        "proofTime": "Proof Time"
       },
       "howItWorks": {
         "title": "How It Works",
@@ -1176,7 +1237,8 @@
           "identityHidden": "Identity Hidden",
           "qualificationProven": "Qualification Proven"
         }
-      }
+      },
+      "resetButton": "Try Again"
     },
     "auction": {
       "badge": "Live Demo - Base Sepolia",
@@ -1481,6 +1543,55 @@
           "title": "Rate Limiting",
           "description": "Nullifiers prevent same member from repeating actions"
         }
+      }
+    },
+    "common": {
+      "walletConnection": "Wallet Connection",
+      "tabs": {
+        "demo": "Demo",
+        "howItWorks": "How It Works"
+      },
+      "progress": {
+        "title": "Progress",
+        "deployContracts": "Deploy Contracts",
+        "generateProof": "Generate Proof",
+        "submitProof": "Submit Proof",
+        "verified": "Verified"
+      },
+      "stats": {
+        "title": "Stats",
+        "totalVerifications": "Total Verifications",
+        "proofGenerated": "Proof Generated",
+        "proofTime": "Proof Time"
+      },
+      "onchain": {
+        "title": "On-Chain Verification",
+        "description": "Submit your proof to the blockchain for permanent, verifiable record.",
+        "submitButton": "Submit Proof On-Chain",
+        "submitting": "Submitting...",
+        "waiting": "Waiting for confirmation...",
+        "verified": "Verified On-Chain!",
+        "verifiedDesc": "Your proof has been successfully verified on the blockchain.",
+        "failed": "Verification Failed",
+        "viewTransaction": "View Transaction"
+      },
+      "contractInfo": {
+        "title": "Contract Info",
+        "network": "Network",
+        "verifier": "Verifier",
+        "appContract": "App Contract"
+      },
+      "realBlockchainAlert": {
+        "title": "Real Blockchain Transaction",
+        "description": "This demo uses Base Sepolia testnet. You will need testnet ETH."
+      },
+      "generateProofButton": "Generate ZK Proof",
+      "proofGenerated": "Proof Generated!",
+      "proofReadyToSubmit": "Your proof is ready. Submit it on-chain for verification.",
+      "resetButton": "Try Again",
+      "result": {
+        "failed": "Failed",
+        "proofTime": "Proof Time"
       }
     }
   },

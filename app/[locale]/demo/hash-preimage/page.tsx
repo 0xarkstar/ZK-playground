@@ -1,17 +1,40 @@
 "use client";
 
-import { useState, useEffect, useCallback, useRef } from "react";
+import { useState, useCallback, useRef, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Progress } from "@/components/ui/progress";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Progress } from "@/components/ui/progress";
-import { GenericContractDeployer, DemoContractConfig } from "@/components/demo/GenericContractDeployer";
+import {
+  GenericContractDeployer,
+  DemoContractConfig,
+} from "@/components/demo/GenericContractDeployer";
 import { useAccount, usePublicClient, useWalletClient } from "wagmi";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import { WalletBalance, FaucetLink } from "@/components/demo/WalletBalance";
+import { LiveBadge } from "@/components/demo/LiveBadge";
+import { motion, AnimatePresence } from "framer-motion";
+import {
+  Wallet,
+  CheckCircle2,
+  Info,
+  ExternalLink,
+  Hash,
+  Shield,
+  Loader2,
+  RefreshCw,
+  Clock,
+  Eye,
+  EyeOff,
+  Lock,
+} from "lucide-react";
+import { useTranslations } from "next-intl";
+import { groth16 } from "snarkjs";
+import { poseidonHashSingle, bigintToHex } from "@/lib/zk/poseidon";
 import {
   HASH_PREIMAGE_VERIFIER_ABI,
   HASH_PREIMAGE_APP_ABI,
@@ -20,25 +43,6 @@ import {
   HASH_PREIMAGE_WASM_PATH,
   HASH_PREIMAGE_ZKEY_PATH,
 } from "@/lib/web3/contracts";
-import { poseidonHashSingle } from "@/lib/zk/poseidon";
-import {
-  Wallet,
-  CheckCircle2,
-  Info,
-  ExternalLink,
-  Hash,
-  Eye,
-  EyeOff,
-  Shield,
-  Loader2,
-  Copy,
-  Check,
-  Clock,
-  RefreshCw,
-} from "lucide-react";
-import { useTranslations } from "next-intl";
-import { LiveBadge } from "@/components/demo/LiveBadge";
-import { motion, AnimatePresence } from "framer-motion";
 
 interface ProofData {
   pA: [string, string];
@@ -47,9 +51,18 @@ interface ProofData {
   pubSignals: string[];
 }
 
+const CONTRACT_CONFIG: DemoContractConfig = {
+  name: "HashPreimageVerifier",
+  verifierAbi: HASH_PREIMAGE_VERIFIER_ABI,
+  verifierBytecode: HASH_PREIMAGE_VERIFIER_BYTECODE as `0x${string}`,
+  appAbi: HASH_PREIMAGE_APP_ABI,
+  appBytecode: HASH_PREIMAGE_APP_BYTECODE as `0x${string}`,
+  verifierLabel: "Groth16Verifier",
+  appLabel: "HashPreimageVerifier",
+};
+
 export default function HashPreimagePage() {
   const t = useTranslations("demo.hashPreimage");
-  const common = useTranslations("common");
   const { address, isConnected } = useAccount();
   const publicClient = usePublicClient();
   const { data: walletClient } = useWalletClient();
@@ -57,58 +70,51 @@ export default function HashPreimagePage() {
   // Contract state
   const [verifierAddress, setVerifierAddress] = useState<string | null>(null);
   const [appAddress, setAppAddress] = useState<string | null>(null);
-  const [isOwner, setIsOwner] = useState(false);
 
-  // Demo state
-  const [secret, setSecret] = useState("");
+  // Form state
+  const [secret, setSecret] = useState<string>("");
   const [showSecret, setShowSecret] = useState(false);
   const [computedHash, setComputedHash] = useState<string | null>(null);
-  const [isComputing, setIsComputing] = useState(false);
-  const [isGeneratingProof, setIsGeneratingProof] = useState(false);
-  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // Proof state
   const [proof, setProof] = useState<ProofData | null>(null);
+  const [isGeneratingProof, setIsGeneratingProof] = useState(false);
   const [progress, setProgress] = useState(0);
   const [step, setStep] = useState("");
+  const [error, setError] = useState<string | null>(null);
+
+  // On-chain state
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [txHash, setTxHash] = useState<string | null>(null);
   const [isVerified, setIsVerified] = useState(false);
-  const [copied, setCopied] = useState(false);
+  const [isRefreshing, setIsRefreshing] = useState(false);
 
   // Stats
-  const [totalVerifications, setTotalVerifications] = useState(0);
-  const [isRefreshing, setIsRefreshing] = useState(false);
+  const [stats, setStats] = useState({ totalVerifications: 0 });
 
   // Timer
   const [elapsedTime, setElapsedTime] = useState(0);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
-    if (isGeneratingProof || isSubmitting) {
+    if (isGeneratingProof) {
       setElapsedTime(0);
-      timerRef.current = setInterval(() => {
-        setElapsedTime((prev) => prev + 100);
-      }, 100);
+      timerRef.current = setInterval(() => setElapsedTime((prev) => prev + 1), 1000);
     } else {
-      if (timerRef.current) {
-        clearInterval(timerRef.current);
-        timerRef.current = null;
-      }
+      if (timerRef.current) clearInterval(timerRef.current);
     }
     return () => {
       if (timerRef.current) clearInterval(timerRef.current);
     };
-  }, [isGeneratingProof, isSubmitting]);
+  }, [isGeneratingProof]);
+
+  const formatTime = (seconds: number) => {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return mins > 0 ? `${mins}m ${secs}s` : `${secs}s`;
+  };
 
   const appContract = appAddress as `0x${string}` | null;
-
-  const contractConfig: DemoContractConfig = {
-    name: "HashPreimageVerifier",
-    verifierAbi: HASH_PREIMAGE_VERIFIER_ABI,
-    verifierBytecode: HASH_PREIMAGE_VERIFIER_BYTECODE as `0x${string}`,
-    appAbi: HASH_PREIMAGE_APP_ABI,
-    appBytecode: HASH_PREIMAGE_APP_BYTECODE as `0x${string}`,
-    verifierLabel: "Groth16Verifier",
-    appLabel: "HashPreimageVerifier",
-  };
 
   // Refresh contract state
   const refreshContractState = useCallback(async () => {
@@ -116,21 +122,18 @@ export default function HashPreimagePage() {
 
     setIsRefreshing(true);
     try {
-      const owner = await publicClient.readContract({
+      const total = await publicClient.readContract({
         address: appContract,
         abi: HASH_PREIMAGE_APP_ABI,
-        functionName: "owner",
+        functionName: "totalVerifications",
       });
-      setIsOwner(address?.toLowerCase() === (owner as string)?.toLowerCase());
-
-      // Note: This contract doesn't have a totalVerifications counter
-      // We could track events instead
+      setStats({ totalVerifications: Number(total as bigint) });
     } catch (err) {
-      console.error("Failed to refresh contract state:", err);
+      console.error("Failed to refresh:", err);
     } finally {
       setIsRefreshing(false);
     }
-  }, [publicClient, appContract, address]);
+  }, [publicClient, appContract]);
 
   useEffect(() => {
     if (appContract) {
@@ -138,188 +141,155 @@ export default function HashPreimagePage() {
     }
   }, [appContract, refreshContractState]);
 
-  // Handle contract deployment
+  // Handle deployment
   const handleDeployed = (verifier: string, app: string) => {
     setVerifierAddress(verifier);
     setAppAddress(app);
-    setIsOwner(true);
   };
 
-  // Compute hash of secret
-  const computeHash = async () => {
-    if (!secret.trim()) return;
+  // Compute hash
+  const computeHash = useCallback(async () => {
+    if (!secret.trim()) {
+      setError("Please enter a secret value");
+      return;
+    }
 
-    setIsComputing(true);
+    setError(null);
+    try {
+      const secretBytes = new TextEncoder().encode(secret);
+      let secretNum = BigInt(0);
+      for (let i = 0; i < Math.min(secretBytes.length, 31); i++) {
+        secretNum = secretNum * BigInt(256) + BigInt(secretBytes[i]);
+      }
+
+      const hash = await poseidonHashSingle(secretNum);
+      setComputedHash(bigintToHex(hash));
+    } catch (err) {
+      console.error("Hash computation failed:", err);
+      setError("Failed to compute hash");
+    }
+  }, [secret]);
+
+  // Generate proof
+  const generateProof = useCallback(async () => {
+    if (!computedHash) {
+      setError("Please compute hash first");
+      return;
+    }
+
+    setIsGeneratingProof(true);
+    setError(null);
     setProgress(0);
-    setProof(null);
-    setTxHash(null);
-    setIsVerified(false);
 
     try {
       setStep(t("steps.convertingToField"));
       setProgress(20);
-      await new Promise((r) => setTimeout(r, 200));
 
-      // Convert string to field element
       const secretBytes = new TextEncoder().encode(secret);
       let secretNum = BigInt(0);
       for (let i = 0; i < Math.min(secretBytes.length, 31); i++) {
-        secretNum = (secretNum << BigInt(8)) + BigInt(secretBytes[i]);
+        secretNum = secretNum * BigInt(256) + BigInt(secretBytes[i]);
       }
 
       setStep(t("steps.computingPoseidon"));
-      setProgress(60);
+      setProgress(40);
 
-      const hash = await poseidonHashSingle(secretNum);
-
-      setStep(t("steps.formattingHash"));
-      setProgress(90);
-      await new Promise((r) => setTimeout(r, 100));
-
-      const hashHex = "0x" + hash.toString(16).padStart(64, "0");
-      setComputedHash(hashHex);
-
-      setStep(t("steps.complete"));
-      setProgress(100);
-    } catch (err) {
-      console.error("Hash computation failed:", err);
-    } finally {
-      setIsComputing(false);
-    }
-  };
-
-  // Generate ZK proof
-  const generateProof = async () => {
-    if (!secret.trim() || !computedHash) return;
-
-    setIsGeneratingProof(true);
-    setProgress(0);
-    setProof(null);
-
-    try {
-      setStep(t("steps.generatingWitness"));
-      setProgress(20);
-
-      // Convert secret to field element
-      const secretBytes = new TextEncoder().encode(secret);
-      let secretNum = BigInt(0);
-      for (let i = 0; i < Math.min(secretBytes.length, 31); i++) {
-        secretNum = (secretNum << BigInt(8)) + BigInt(secretBytes[i]);
-      }
-
-      // Prepare circuit inputs
-      const circuitInputs = {
+      const input = {
         preimage: secretNum.toString(),
         hash: BigInt(computedHash).toString(),
       };
 
-      setStep(t("steps.computingProof"));
-      setProgress(50);
+      setStep(t("steps.generatingWitness"));
+      setProgress(60);
 
-      // Load snarkjs dynamically
-      const snarkjs = await import("snarkjs");
-
-      // Generate proof
-      const { proof: proofData, publicSignals } = await snarkjs.groth16.fullProve(
-        circuitInputs,
+      const { proof: generatedProof, publicSignals } = await groth16.fullProve(
+        input,
         HASH_PREIMAGE_WASM_PATH,
         HASH_PREIMAGE_ZKEY_PATH
       );
 
-      setStep(t("steps.verifyingProof"));
-      setProgress(80);
+      setStep(t("steps.formattingHash"));
+      setProgress(90);
 
-      // Format proof for contract
-      const formattedProof: ProofData = {
-        pA: [proofData.pi_a[0], proofData.pi_a[1]],
+      setProof({
+        pA: [generatedProof.pi_a[0], generatedProof.pi_a[1]] as [string, string],
         pB: [
-          [proofData.pi_b[0][1], proofData.pi_b[0][0]],
-          [proofData.pi_b[1][1], proofData.pi_b[1][0]],
-        ],
-        pC: [proofData.pi_c[0], proofData.pi_c[1]],
+          [generatedProof.pi_b[0][1], generatedProof.pi_b[0][0]],
+          [generatedProof.pi_b[1][1], generatedProof.pi_b[1][0]],
+        ] as [[string, string], [string, string]],
+        pC: [generatedProof.pi_c[0], generatedProof.pi_c[1]] as [string, string],
         pubSignals: publicSignals,
-      };
+      });
 
-      setProof(formattedProof);
-      setStep(t("steps.verified"));
+      setStep(t("steps.complete"));
       setProgress(100);
     } catch (err) {
       console.error("Proof generation failed:", err);
-      setStep("Proof generation failed");
+      setError(err instanceof Error ? err.message : "Failed to generate proof");
     } finally {
       setIsGeneratingProof(false);
     }
-  };
+  }, [secret, computedHash, t]);
 
   // Submit proof on-chain
-  const submitProof = async () => {
-    if (!walletClient || !publicClient || !appContract || !proof || !computedHash) return;
+  const submitProof = useCallback(async () => {
+    if (!walletClient || !publicClient || !appContract || !proof) return;
 
     setIsSubmitting(true);
-    setStep(t("onchain.submitting"));
+    setError(null);
 
     try {
+      const pA: [bigint, bigint] = [BigInt(proof.pA[0]), BigInt(proof.pA[1])];
+      const pB: [[bigint, bigint], [bigint, bigint]] = [
+        [BigInt(proof.pB[0][0]), BigInt(proof.pB[0][1])],
+        [BigInt(proof.pB[1][0]), BigInt(proof.pB[1][1])],
+      ];
+      const pC: [bigint, bigint] = [BigInt(proof.pC[0]), BigInt(proof.pC[1])];
+      const hashValue = BigInt(proof.pubSignals[0]);
+
       const hash = await walletClient.writeContract({
         address: appContract,
         abi: HASH_PREIMAGE_APP_ABI,
         functionName: "verifyPreimage",
-        args: [
-          proof.pA.map(BigInt) as [bigint, bigint],
-          proof.pB.map((pair) => pair.map(BigInt)) as [[bigint, bigint], [bigint, bigint]],
-          proof.pC.map(BigInt) as [bigint, bigint],
-          BigInt(computedHash),
-        ],
+        args: [pA, pB, pC, hashValue],
       });
 
-      setStep(t("onchain.waiting"));
-      const receipt = await publicClient.waitForTransactionReceipt({ hash });
-
-      if (receipt.status === "success") {
-        setTxHash(hash);
-        setIsVerified(true);
-        setStep(t("onchain.verified"));
-      } else {
-        setStep(t("onchain.failed"));
-      }
+      await publicClient.waitForTransactionReceipt({ hash });
+      setTxHash(hash);
+      setIsVerified(true);
+      refreshContractState();
     } catch (err) {
-      console.error("On-chain verification failed:", err);
-      setStep(t("onchain.failed"));
+      console.error("Submission failed:", err);
+      setError(err instanceof Error ? err.message : "Failed to submit proof");
     } finally {
       setIsSubmitting(false);
     }
-  };
+  }, [walletClient, publicClient, appContract, proof, refreshContractState]);
 
-  const copyHash = () => {
-    if (computedHash) {
-      navigator.clipboard.writeText(computedHash);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
-    }
-  };
+  // Reset demo
+  const resetDemo = useCallback(() => {
+    setSecret("");
+    setComputedHash(null);
+    setProof(null);
+    setTxHash(null);
+    setIsVerified(false);
+    setError(null);
+    setProgress(0);
+    setStep("");
+  }, []);
 
-  const formatTime = (ms: number) => {
-    if (ms < 1000) return `${ms}ms`;
-    return `${(ms / 1000).toFixed(1)}s`;
-  };
-
-  const getProgressStep = () => {
-    if (!appAddress) return 0;
-    if (!computedHash) return 1;
-    if (!proof) return 2;
-    if (!isVerified) return 3;
-    return 4;
-  };
+  const currentStep = !appAddress ? 0 : !computedHash ? 1 : !proof ? 2 : !isVerified ? 3 : 4;
 
   const progressSteps = [
-    { label: t("progress.deployContracts"), completed: !!appAddress },
-    { label: t("progress.computeHash"), completed: !!computedHash },
-    { label: t("progress.generateProof"), completed: !!proof },
-    { label: t("progress.submitProof"), completed: isVerified },
+    { step: 0, name: t("progress.deployContracts") },
+    { step: 1, name: t("progress.computeHash") },
+    { step: 2, name: t("progress.generateProof") },
+    { step: 3, name: t("progress.submitProof") },
+    { step: 4, name: t("steps.complete") },
   ];
 
   return (
-    <div className="container mx-auto px-4 py-8 max-w-7xl">
-      {/* Header */}
+    <div className="container mx-auto px-4 py-8 max-w-6xl">
       <div className="mb-8">
         <div className="flex items-center gap-2 mb-4">
           <Badge variant="secondary">{t("badge")}</Badge>
@@ -329,28 +299,16 @@ export default function HashPreimagePage() {
         <p className="text-muted-foreground text-lg">{t("description")}</p>
       </div>
 
-      {/* Real Blockchain Alert */}
-      <Alert className="mb-6 border-orange-500/50 bg-orange-500/10">
-        <Info className="h-4 w-4 text-orange-500" />
-        <AlertTitle className="text-orange-600 dark:text-orange-400">
-          {t("realBlockchainAlert.title")}
-        </AlertTitle>
-        <AlertDescription>
-          {t("realBlockchainAlert.description")}{" "}
-          <a
-            href="https://docs.base.org/chain/network-faucets"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="underline font-medium"
-          >
-            Base Faucet
-          </a>
-        </AlertDescription>
-      </Alert>
-
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Main Content */}
         <div className="lg:col-span-2 space-y-6">
+          <Alert>
+            <Info className="h-4 w-4" />
+            <AlertTitle>{t("realBlockchainAlert.title")}</AlertTitle>
+            <AlertDescription>
+              {t("realBlockchainAlert.description")} <FaucetLink />.
+            </AlertDescription>
+          </Alert>
+
           {/* Wallet Connection */}
           <Card>
             <CardHeader>
@@ -359,24 +317,22 @@ export default function HashPreimagePage() {
                 {t("walletConnection")}
               </CardTitle>
             </CardHeader>
-            <CardContent>
-              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-                <ConnectButton />
-                {isConnected && (
-                  <div className="flex items-center gap-4">
-                    <WalletBalance />
-                    <FaucetLink />
-                  </div>
-                )}
-              </div>
+            <CardContent className="space-y-4">
+              <ConnectButton chainStatus="icon" showBalance={false} />
+              {isConnected && <WalletBalance />}
             </CardContent>
           </Card>
 
-          {isConnected && (
-            <>
+          <Tabs defaultValue="demo" className="space-y-4">
+            <TabsList className="grid w-full grid-cols-2">
+              <TabsTrigger value="demo">{t("tabs.demo") || "Demo"}</TabsTrigger>
+              <TabsTrigger value="how">{t("tabs.howItWorks") || "How It Works"}</TabsTrigger>
+            </TabsList>
+
+            <TabsContent value="demo" className="space-y-4">
               {/* Contract Deployment */}
               <GenericContractDeployer
-                config={contractConfig}
+                config={CONTRACT_CONFIG}
                 onDeployed={handleDeployed}
                 isDeployed={!!appAddress}
                 verifierAddress={verifierAddress}
@@ -385,7 +341,7 @@ export default function HashPreimagePage() {
 
               {appAddress && (
                 <>
-                  {/* Step 1: Compute Hash */}
+                  {/* Step 1: Enter Secret & Compute Hash */}
                   <Card>
                     <CardHeader>
                       <CardTitle className="flex items-center gap-2">
@@ -405,63 +361,27 @@ export default function HashPreimagePage() {
                             onChange={(e) => setSecret(e.target.value)}
                             className="pr-10"
                           />
-                          <Button
+                          <button
                             type="button"
-                            variant="ghost"
-                            size="sm"
-                            className="absolute right-0 top-0 h-full px-3"
                             onClick={() => setShowSecret(!showSecret)}
+                            className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
                           >
                             {showSecret ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                          </Button>
+                          </button>
                         </div>
                         <p className="text-xs text-muted-foreground">{t("step1.secretHint")}</p>
                       </div>
 
-                      <AnimatePresence mode="wait">
-                        {isComputing ? (
-                          <motion.div
-                            key="computing"
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            exit={{ opacity: 0 }}
-                            className="space-y-2"
-                          >
-                            <div className="flex items-center gap-2 text-sm">
-                              <Loader2 className="h-4 w-4 animate-spin" />
-                              <span>{step}</span>
-                            </div>
-                            <Progress value={progress} className="h-2" />
-                          </motion.div>
-                        ) : (
-                          <motion.div
-                            key="button"
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            exit={{ opacity: 0 }}
-                          >
-                            <Button onClick={computeHash} disabled={!secret.trim()} className="w-full">
-                              <Hash className="h-4 w-4 mr-2" />
-                              {t("step1.computeButton")}
-                            </Button>
-                          </motion.div>
-                        )}
-                      </AnimatePresence>
+                      <Button onClick={computeHash} disabled={!secret.trim()} className="w-full">
+                        <Hash className="h-4 w-4 mr-2" />
+                        {t("step1.computeButton")}
+                      </Button>
 
                       {computedHash && (
-                        <motion.div
-                          initial={{ opacity: 0, y: 10 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          className="p-3 bg-muted rounded-lg space-y-2"
-                        >
-                          <div className="flex items-center justify-between">
-                            <span className="text-sm font-medium">{t("step1.hashResult")}</span>
-                            <Button variant="ghost" size="sm" onClick={copyHash} className="h-8">
-                              {copied ? <Check className="h-4 w-4 text-green-500" /> : <Copy className="h-4 w-4" />}
-                            </Button>
-                          </div>
-                          <code className="text-xs break-all block">{computedHash}</code>
-                        </motion.div>
+                        <div className="p-4 bg-muted rounded-lg">
+                          <div className="text-sm text-muted-foreground mb-1">{t("step1.hashResult")}</div>
+                          <code className="text-xs break-all font-mono">{computedHash}</code>
+                        </div>
                       )}
                     </CardContent>
                   </Card>
@@ -476,8 +396,6 @@ export default function HashPreimagePage() {
                         </CardTitle>
                       </CardHeader>
                       <CardContent className="space-y-4">
-                        <p className="text-sm text-muted-foreground">{t("proofDescription")}</p>
-
                         <AnimatePresence mode="wait">
                           {isGeneratingProof ? (
                             <motion.div
@@ -485,48 +403,38 @@ export default function HashPreimagePage() {
                               initial={{ opacity: 0 }}
                               animate={{ opacity: 1 }}
                               exit={{ opacity: 0 }}
-                              className="space-y-2"
+                              className="space-y-3"
                             >
-                              <div className="flex items-center gap-2 text-sm">
-                                <Loader2 className="h-4 w-4 animate-spin" />
-                                <span>{step}</span>
-                              </div>
+                              <div className="text-sm font-medium">{step}</div>
                               <Progress value={progress} className="h-2" />
-                              <div className="flex items-center gap-1 text-xs text-muted-foreground">
-                                <Clock className="h-3 w-3" />
-                                {formatTime(elapsedTime)}
+                              <div className="flex items-center justify-between text-xs text-muted-foreground">
+                                <span>{t("steps.computingProof")}</span>
+                                <span className="flex items-center gap-1">
+                                  <Clock className="h-3 w-3" />
+                                  {formatTime(elapsedTime)}
+                                </span>
                               </div>
+                            </motion.div>
+                          ) : proof ? (
+                            <motion.div
+                              key="complete"
+                              initial={{ opacity: 0, scale: 0.95 }}
+                              animate={{ opacity: 1, scale: 1 }}
+                              className="space-y-3"
+                            >
+                              <div className="flex items-center gap-2 text-green-600 dark:text-green-400">
+                                <CheckCircle2 className="h-5 w-5" />
+                                <span className="font-medium">{t("proofGenerated")}</span>
+                              </div>
+                              <p className="text-sm text-muted-foreground">{t("proofReadyToSubmit")}</p>
                             </motion.div>
                           ) : (
-                            <motion.div
-                              key="button"
-                              initial={{ opacity: 0 }}
-                              animate={{ opacity: 1 }}
-                              exit={{ opacity: 0 }}
-                            >
-                              <Button onClick={generateProof} disabled={!computedHash || !!proof} className="w-full">
-                                <Shield className="h-4 w-4 mr-2" />
-                                {t("generateProofButton")}
-                              </Button>
-                            </motion.div>
+                            <Button onClick={generateProof} className="w-full">
+                              <Shield className="h-4 w-4 mr-2" />
+                              {t("generateProofButton")}
+                            </Button>
                           )}
                         </AnimatePresence>
-
-                        {proof && (
-                          <motion.div
-                            initial={{ opacity: 0, y: 10 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            className="p-3 bg-green-500/10 border border-green-500/20 rounded-lg"
-                          >
-                            <div className="flex items-center gap-2 mb-2">
-                              <CheckCircle2 className="h-5 w-5 text-green-500" />
-                              <span className="font-medium text-green-600 dark:text-green-400">
-                                {t("proofGenerated")}
-                              </span>
-                            </div>
-                            <p className="text-sm text-muted-foreground">{t("proofReadyToSubmit")}</p>
-                          </motion.div>
-                        )}
                       </CardContent>
                     </Card>
                   )}
@@ -536,101 +444,117 @@ export default function HashPreimagePage() {
                     <Card>
                       <CardHeader>
                         <CardTitle className="flex items-center gap-2">
-                          <ExternalLink className="h-5 w-5" />
+                          <Lock className="h-5 w-5" />
                           {t("onchain.title")}
                         </CardTitle>
                       </CardHeader>
                       <CardContent className="space-y-4">
-                        <p className="text-sm text-muted-foreground">{t("onchain.description")}</p>
-
-                        <AnimatePresence mode="wait">
-                          {isSubmitting ? (
-                            <motion.div
-                              key="submitting"
-                              initial={{ opacity: 0 }}
-                              animate={{ opacity: 1 }}
-                              exit={{ opacity: 0 }}
-                              className="space-y-2"
-                            >
-                              <div className="flex items-center gap-2 text-sm">
-                                <Loader2 className="h-4 w-4 animate-spin" />
-                                <span>{step}</span>
-                              </div>
-                              <Progress value={50} className="h-2" />
-                            </motion.div>
-                          ) : isVerified ? (
-                            <motion.div
-                              key="verified"
-                              initial={{ opacity: 0, y: 10 }}
-                              animate={{ opacity: 1, y: 0 }}
-                              className="p-4 bg-green-500/10 border border-green-500/20 rounded-lg"
-                            >
-                              <div className="flex items-center gap-2 mb-2">
-                                <CheckCircle2 className="h-5 w-5 text-green-500" />
-                                <span className="font-medium text-green-600 dark:text-green-400">
-                                  {t("onchain.verified")}
-                                </span>
-                              </div>
-                              <p className="text-sm text-muted-foreground mb-3">{t("onchain.verifiedDesc")}</p>
-                              {txHash && (
-                                <a
-                                  href={`https://sepolia.basescan.org/tx/${txHash}`}
-                                  target="_blank"
-                                  rel="noopener noreferrer"
-                                  className="text-sm text-primary hover:underline flex items-center gap-1"
-                                >
+                        {isVerified ? (
+                          <div className="space-y-4">
+                            <div className="flex items-center gap-2 text-green-600 dark:text-green-400">
+                              <CheckCircle2 className="h-5 w-5" />
+                              <span className="font-medium">{t("onchain.verified")}</span>
+                            </div>
+                            <p className="text-sm text-muted-foreground">{t("onchain.verifiedDesc")}</p>
+                            {txHash && (
+                              <a
+                                href={`https://sepolia.basescan.org/tx/${txHash}`}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                              >
+                                <Button variant="outline" size="sm" className="w-full">
+                                  <ExternalLink className="h-4 w-4 mr-2" />
                                   {t("onchain.viewTransaction")}
-                                  <ExternalLink className="h-3 w-3" />
-                                </a>
-                              )}
-                            </motion.div>
-                          ) : (
-                            <motion.div
-                              key="button"
-                              initial={{ opacity: 0 }}
-                              animate={{ opacity: 1 }}
-                              exit={{ opacity: 0 }}
-                            >
-                              <Button onClick={submitProof} className="w-full">
-                                <ExternalLink className="h-4 w-4 mr-2" />
+                                </Button>
+                              </a>
+                            )}
+                            <Button onClick={resetDemo} variant="secondary" className="w-full">
+                              {t("resetButton") || "Try Again"}
+                            </Button>
+                          </div>
+                        ) : (
+                          <Button onClick={submitProof} disabled={isSubmitting} className="w-full">
+                            {isSubmitting ? (
+                              <>
+                                <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                                {t("onchain.submitting")}
+                              </>
+                            ) : (
+                              <>
+                                <Lock className="h-4 w-4 mr-2" />
                                 {t("onchain.submitButton")}
-                              </Button>
-                            </motion.div>
-                          )}
-                        </AnimatePresence>
+                              </>
+                            )}
+                          </Button>
+                        )}
                       </CardContent>
                     </Card>
                   )}
                 </>
               )}
-            </>
-          )}
+
+              {error && (
+                <Alert variant="destructive">
+                  <AlertTitle>{t("result.failed")}</AlertTitle>
+                  <AlertDescription>{error}</AlertDescription>
+                </Alert>
+              )}
+            </TabsContent>
+
+            <TabsContent value="how" className="space-y-4">
+              <Card>
+                <CardHeader>
+                  <CardTitle>{t("howItWorks.title")}</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-6">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="space-y-4">
+                      <h4 className="font-semibold">{t("privacy.title")}</h4>
+                      <p className="text-sm text-muted-foreground">{t("privacy.description")}</p>
+                    </div>
+                    <div className="space-y-4">
+                      <h4 className="font-semibold">{t("howItWorks.step1.title")}</h4>
+                      <p className="text-sm text-muted-foreground">{t("howItWorks.step1.description")}</p>
+                      <h4 className="font-semibold">{t("howItWorks.step2.title")}</h4>
+                      <p className="text-sm text-muted-foreground">{t("howItWorks.step2.description")}</p>
+                      <h4 className="font-semibold">{t("howItWorks.step3.title")}</h4>
+                      <p className="text-sm text-muted-foreground">{t("howItWorks.step3.description")}</p>
+                    </div>
+                  </div>
+                  <div className="flex flex-wrap gap-2">
+                    <Badge variant="outline">{t("privacy.tags.zeroKnowledge")}</Badge>
+                    <Badge variant="outline">{t("privacy.tags.poseidonHash")}</Badge>
+                    <Badge variant="outline">{t("privacy.tags.noSecretLeaked")}</Badge>
+                  </div>
+                </CardContent>
+              </Card>
+            </TabsContent>
+          </Tabs>
         </div>
 
         {/* Sidebar */}
         <div className="space-y-6">
-          {/* Progress */}
           <Card>
             <CardHeader>
               <CardTitle className="text-lg">{t("progress.title")}</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="space-y-3">
-                {progressSteps.map((pStep, index) => (
-                  <div key={index} className="flex items-center gap-3">
+              <div className="space-y-4">
+                {progressSteps.map((item) => (
+                  <div key={item.step} className="flex items-center gap-3">
                     <div
-                      className={`h-6 w-6 rounded-full flex items-center justify-center text-xs font-medium ${
-                        pStep.completed
+                      className={`h-8 w-8 rounded-full flex items-center justify-center text-sm font-bold ${
+                        currentStep > item.step
                           ? "bg-green-500 text-white"
-                          : getProgressStep() === index
+                          : currentStep === item.step
                           ? "bg-primary text-primary-foreground"
                           : "bg-muted text-muted-foreground"
                       }`}
                     >
-                      {pStep.completed ? <Check className="h-3 w-3" /> : index + 1}
+                      {currentStep > item.step ? <CheckCircle2 className="h-4 w-4" /> : item.step}
                     </div>
-                    <span className={`text-sm ${pStep.completed ? "text-green-600 dark:text-green-400" : ""}`}>
-                      {pStep.label}
+                    <span className={currentStep >= item.step ? "font-medium" : "text-muted-foreground"}>
+                      {item.name}
                     </span>
                   </div>
                 ))}
@@ -638,115 +562,64 @@ export default function HashPreimagePage() {
             </CardContent>
           </Card>
 
-          {/* Contract Info */}
-          {appAddress && (
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-lg flex items-center justify-between">
-                  {t("contractInfo.title")}
-                  <Button variant="ghost" size="sm" onClick={refreshContractState} disabled={isRefreshing}>
-                    <RefreshCw className={`h-4 w-4 ${isRefreshing ? "animate-spin" : ""}`} />
-                  </Button>
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-3 text-sm">
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">{t("contractInfo.network")}</span>
-                  <span className="font-medium">Base Sepolia</span>
-                </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-muted-foreground">{t("contractInfo.verifier")}</span>
-                  <a
-                    href={`https://sepolia.basescan.org/address/${verifierAddress}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="font-mono text-xs hover:underline flex items-center gap-1"
-                  >
-                    {verifierAddress?.slice(0, 6)}...{verifierAddress?.slice(-4)}
-                    <ExternalLink className="h-3 w-3" />
-                  </a>
-                </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-muted-foreground">{t("contractInfo.appContract")}</span>
-                  <a
-                    href={`https://sepolia.basescan.org/address/${appAddress}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="font-mono text-xs hover:underline flex items-center gap-1"
-                  >
-                    {appAddress?.slice(0, 6)}...{appAddress?.slice(-4)}
-                    <ExternalLink className="h-3 w-3" />
-                  </a>
-                </div>
-                {isOwner && (
-                  <div className="pt-2 border-t">
-                    <Badge variant="outline" className="text-xs">
-                      {t("contractInfo.owner")}
-                    </Badge>
-                  </div>
-                )}
-              </CardContent>
-            </Card>
-          )}
-
-          {/* How It Works */}
           <Card>
             <CardHeader>
-              <CardTitle className="text-lg">{t("howItWorks.title")}</CardTitle>
+              <CardTitle className="flex items-center justify-between text-lg">
+                <span>{t("stats.title") || "Stats"}</span>
+                <Button variant="ghost" size="sm" onClick={refreshContractState} disabled={!appAddress || isRefreshing}>
+                  <RefreshCw className={`h-4 w-4 ${isRefreshing ? "animate-spin" : ""}`} />
+                </Button>
+              </CardTitle>
             </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                <div className="space-y-2">
-                  <div className="flex items-center gap-2">
-                    <div className="h-6 w-6 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-xs font-bold">
-                      1
-                    </div>
-                    <h4 className="font-medium text-sm">{t("howItWorks.step1.title")}</h4>
-                  </div>
-                  <p className="text-xs text-muted-foreground pl-8">{t("howItWorks.step1.description")}</p>
-                </div>
-                <div className="space-y-2">
-                  <div className="flex items-center gap-2">
-                    <div className="h-6 w-6 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-xs font-bold">
-                      2
-                    </div>
-                    <h4 className="font-medium text-sm">{t("howItWorks.step2.title")}</h4>
-                  </div>
-                  <p className="text-xs text-muted-foreground pl-8">{t("howItWorks.step2.description")}</p>
-                </div>
-                <div className="space-y-2">
-                  <div className="flex items-center gap-2">
-                    <div className="h-6 w-6 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-xs font-bold">
-                      3
-                    </div>
-                    <h4 className="font-medium text-sm">{t("howItWorks.step3.title")}</h4>
-                  </div>
-                  <p className="text-xs text-muted-foreground pl-8">{t("howItWorks.step3.description")}</p>
-                </div>
+            <CardContent className="space-y-3 text-sm">
+              <div className="flex items-center justify-between">
+                <span className="text-muted-foreground">{t("stats.totalVerifications") || "Total Verifications"}</span>
+                <Badge variant="secondary">{stats.totalVerifications}</Badge>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-muted-foreground">{t("stats.hashComputed") || "Hash Computed"}</span>
+                <Badge variant={computedHash ? "default" : "secondary"}>{computedHash ? "Yes" : "No"}</Badge>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-muted-foreground">{t("stats.proofGenerated") || "Proof Generated"}</span>
+                <Badge variant={proof ? "default" : "secondary"}>{proof ? "Yes" : "No"}</Badge>
               </div>
             </CardContent>
           </Card>
 
-          {/* Privacy Guarantee */}
-          <Card className="border-primary/20 bg-primary/5">
-            <CardContent className="pt-6">
-              <div className="flex items-start gap-3">
-                <div className="p-2 bg-primary/10 rounded-lg">
-                  <Shield className="h-5 w-5 text-primary" />
-                </div>
-                <div>
-                  <h4 className="font-medium text-sm mb-1">{t("privacy.title")}</h4>
-                  <p className="text-xs text-muted-foreground">{t("privacy.description")}</p>
-                  <div className="flex flex-wrap gap-1 mt-2">
-                    <Badge variant="secondary" className="text-xs">
-                      {t("privacy.tags.zeroKnowledge")}
-                    </Badge>
-                    <Badge variant="secondary" className="text-xs">
-                      {t("privacy.tags.poseidonHash")}
-                    </Badge>
-                  </div>
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-lg">{t("contractInfo.title")}</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-3 text-sm">
+              <div>
+                <span className="text-muted-foreground">{t("contractInfo.network")}:</span>
+                <Badge variant="outline" className="ml-2">Base Sepolia</Badge>
+              </div>
+              <div>
+                <span className="text-muted-foreground">{t("contractInfo.verifier")}:</span>
+                <div className="font-mono text-xs mt-1 break-all">
+                  {verifierAddress || "Not deployed"}
                 </div>
               </div>
+              <div>
+                <span className="text-muted-foreground">{t("contractInfo.appContract")}:</span>
+                <div className="font-mono text-xs mt-1 break-all">
+                  {appAddress || "Not deployed"}
+                </div>
+              </div>
+              {appAddress && (
+                <a
+                  href={`https://sepolia.basescan.org/address/${appAddress}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <Button variant="outline" size="sm" className="w-full mt-2">
+                    <ExternalLink className="h-4 w-4 mr-2" />
+                    View on Basescan
+                  </Button>
+                </a>
+              )}
             </CardContent>
           </Card>
         </div>

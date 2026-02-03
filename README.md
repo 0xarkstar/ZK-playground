@@ -17,7 +17,7 @@ ZK Playground is an educational platform designed to help developers understand 
 
 - **Educational Content**: Learn SNARK and STARK concepts step by step
 - **Interactive Visualizations**: Explore circuit structures and proof generation flows
-- **Working Demo**: A fully functional ZK-based secret voting application
+- **11 Live Demos**: Fully functional ZK applications with on-chain verification on Base Sepolia
 
 ## Features
 
@@ -31,10 +31,32 @@ ZK Playground is an educational platform designed to help developers understand 
 - Animated proof generation flow
 - Real-time constraint visualization
 
-### Voting Demo
-- Anonymous voting with ZK proofs
-- Merkle tree membership verification
-- On-chain proof verification (Base Sepolia)
+### Live Demos (Base Sepolia)
+
+All demos feature real smart contract deployment and on-chain proof verification.
+
+#### Beginner Demos
+| Demo | Description | Circuit |
+|------|-------------|---------|
+| **Hash Preimage** | Prove knowledge of a hash preimage without revealing it | `hash_preimage.circom` |
+| **Age Verification** | Prove you're above a certain age without revealing birthdate | `age_verification.circom` |
+| **Password Proof** | Authenticate without transmitting your password | `password_proof.circom` |
+| **Sudoku** | Prove you solved a Sudoku puzzle without revealing the solution | `sudoku.circom` |
+| **Credential** | Prove qualifications without revealing identity | `credential_proof.circom` |
+
+#### Intermediate Demos
+| Demo | Description | Circuit |
+|------|-------------|---------|
+| **Secret Voting** | Anonymous voting with Merkle tree membership | `vote_demo.circom` |
+| **Private Airdrop** | Claim tokens anonymously with eligibility proof | `merkle_airdrop.circom` |
+| **Mastermind** | Code-breaking game with ZK-verified hints | `mastermind.circom` |
+
+#### Advanced Demos
+| Demo | Description | Circuit |
+|------|-------------|---------|
+| **Mixer** | Privacy-preserving token transfers | `mixer_demo.circom` |
+| **Private Club** | Anonymous membership verification | `private_membership.circom` |
+| **Sealed Auction** | Commit-reveal auction with hidden bids | `sealed_bid.circom` |
 
 ## Tech Stack
 
@@ -60,21 +82,51 @@ zk-playground/
 │       ├── visualization/  # Circuit & proof visualization
 │       │   ├── circuit/
 │       │   └── proof/
-│       └── demo/
-│           └── voting/     # ZK voting demo
+│       └── demo/           # ZK demo applications
+│           ├── voting/         # Secret voting
+│           ├── hash-preimage/  # Hash preimage proof
+│           ├── age-verification/ # Age verification
+│           ├── password-proof/ # Password authentication
+│           ├── sudoku/         # Sudoku solver proof
+│           ├── credential/     # Credential verification
+│           ├── airdrop/        # Private airdrop
+│           ├── mastermind/     # Mastermind game
+│           ├── mixer/          # Token mixer
+│           ├── private-club/   # Private membership
+│           └── auction/        # Sealed bid auction
 ├── circuits/               # Circom ZK circuits
-│   ├── simple.circom       # Educational basic circuits
-│   ├── merkle.circom       # Merkle tree utilities
-│   ├── vote.circom         # Base voting circuit
-│   └── vote_demo.circom    # Demo voting circuit
+│   ├── hash_preimage.circom
+│   ├── age_verification.circom
+│   ├── password_proof.circom
+│   ├── sudoku.circom
+│   ├── credential_proof.circom
+│   ├── vote_demo.circom
+│   ├── merkle_airdrop.circom
+│   ├── mastermind.circom
+│   ├── mixer_demo.circom
+│   ├── private_membership.circom
+│   ├── sealed_bid.circom
+│   ├── merkle.circom       # Shared merkle utilities
+│   ├── simple.circom       # Educational examples
+│   └── vote.circom         # Base voting circuit
 ├── contracts/              # Solidity smart contracts
-│   ├── SecretVoting.sol    # Voting contract
-│   └── Groth16Verifier.sol # Groth16 proof verifier
+│   ├── SecretVoting.sol
+│   ├── HashPreimageVerifier.sol
+│   ├── AgeVerifier.sol
+│   ├── PasswordVerifier.sol
+│   ├── SudokuVerifier.sol
+│   ├── CredentialVerifier.sol
+│   ├── PrivateAirdrop.sol
+│   ├── Mastermind.sol
+│   ├── Mixer.sol
+│   ├── PrivateClub.sol
+│   ├── SealedAuction.sol
+│   └── Groth16Verifier.sol # Generated verifiers
 ├── lib/
 │   ├── zk/                 # ZK utilities (snarkjs, merkle, poseidon)
-│   └── web3/               # Web3 configuration
+│   └── web3/               # Web3 configuration & contract ABIs
 ├── components/             # React components
-│   ├── demo/               # Voting demo components
+│   ├── demo/               # Demo-specific components
 │   ├── education/          # Education page components
 │   ├── visualization/      # Visualization components
 │   ├── layout/             # Layout components
@@ -83,8 +135,9 @@ zk-playground/
 ├── messages/               # i18n translation files
 │   ├── en.json
 │   └── ko.json
+├── build/                  # Compiled circuit artifacts
+│   └── [circuit]_js/       # WASM & witness generators
 ├── scripts/                # Deployment scripts
-│   └── deploy.ts
 ├── test/                   # Contract tests
 └── e2e/                    # Playwright E2E tests
 ```
@@ -138,20 +191,26 @@ npm run test:e2e:headed
 
 ## ZK Circuits
 
-### vote_demo.circom
-The main voting circuit that combines:
-- Merkle tree membership proof (voter eligibility)
-- Nullifier generation (prevent double voting)
-- Vote commitment
+### Beginner Circuits
 
-### merkle.circom
-Poseidon hash-based Merkle tree verification utilities for membership proofs.
+| Circuit | Inputs | Public Outputs | Description |
+|---------|--------|----------------|-------------|
+| `hash_preimage.circom` | preimage | hash | Prove knowledge of preimage |
+| `age_verification.circom` | birthdate, threshold | isEligible | Prove age requirement |
+| `password_proof.circom` | password, salt | hash | Prove password knowledge |
+| `sudoku.circom` | solution, puzzle | puzzleHash | Prove valid solution |
+| `credential_proof.circom` | credential, issuerSig | credentialType, threshold | Prove qualification |
 
-### simple.circom
-Educational circuits including:
-- Multiplier (basic constraint example)
-- Range proof
-- Other fundamental ZK building blocks
+### Advanced Circuits
+
+| Circuit | Description |
+|---------|-------------|
+| `vote_demo.circom` | Merkle membership + nullifier for anonymous voting |
+| `merkle_airdrop.circom` | Merkle proof for private token claims |
+| `mastermind.circom` | Hint verification for code-breaking game |
+| `mixer_demo.circom` | Deposit/withdraw with nullifier tracking |
+| `private_membership.circom` | Anonymous group membership proof |
+| `sealed_bid.circom` | Commit-reveal for hidden auction bids |
 
 ## Architecture
 
@@ -160,21 +219,21 @@ Educational circuits including:
 │         Frontend (Next.js)          │
 │    - Education content              │
 │    - Visualization                  │
-│    - Voting UI                      │
+│    - 11 Interactive demos           │
 └─────────────────┬───────────────────┘
                   │ wagmi / RainbowKit
                   ▼
 ┌─────────────────────────────────────┐
 │    Smart Contracts (Base Sepolia)   │
-│    - SecretVoting.sol               │
-│    - Groth16Verifier.sol            │
+│    - Demo-specific contracts        │
+│    - Groth16Verifier contracts      │
 └─────────────────┬───────────────────┘
                   │ Groth16 proof verification
                   ▲
 ┌─────────────────┴───────────────────┐
 │         ZK Circuits (Circom)        │
 │    - Client-side proof generation   │
-│    - SnarkJS integration            │
+│    - SnarkJS / WASM integration     │
 └─────────────────────────────────────┘
 ```
 
@@ -199,7 +258,15 @@ Copy `.env.example` to `.env.local` and configure:
 cp .env.example .env.local
 ```
 
-See `.env.example` for required variables.
+Required variables:
+- `NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID` - WalletConnect project ID
+- `PRIVATE_KEY` - Deployer wallet private key (for contract deployment)
+
+See `.env.example` for all available options.
+
+## Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
 
 ## License
 

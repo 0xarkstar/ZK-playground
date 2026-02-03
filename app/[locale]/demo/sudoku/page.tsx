@@ -1,39 +1,36 @@
 "use client";
 
-import { useState, useCallback } from "react";
-import { Badge } from "@/components/ui/badge";
+import { useState, useCallback, useRef, useEffect } from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { useTranslations } from "next-intl";
-import { ConnectButton } from "@rainbow-me/rainbowkit";
-import { useAccount, usePublicClient, useWalletClient } from "wagmi";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Progress } from "@/components/ui/progress";
+import { Input } from "@/components/ui/input";
 import {
   GenericContractDeployer,
   DemoContractConfig,
 } from "@/components/demo/GenericContractDeployer";
+import { useAccount, usePublicClient, useWalletClient } from "wagmi";
+import { ConnectButton } from "@rainbow-me/rainbowkit";
 import { WalletBalance, FaucetLink } from "@/components/demo/WalletBalance";
 import { LiveBadge } from "@/components/demo/LiveBadge";
+import { motion, AnimatePresence } from "framer-motion";
 import {
-  AlertTriangle,
-  CheckCircle2,
-  XCircle,
-  Loader2,
-  Grid3X3,
-  ExternalLink,
-  FileCheck,
-  ShieldCheck,
-  Clock,
   Wallet,
+  CheckCircle2,
+  Info,
+  ExternalLink,
+  Grid3X3,
+  Shield,
+  Loader2,
   RefreshCw,
+  Clock,
+  Lock,
+  Sparkles,
 } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { groth16 } from "snarkjs";
 import {
   SUDOKU_VERIFIER_ABI,
@@ -80,6 +77,16 @@ const SAMPLE_PUZZLES = [
   },
 ];
 
+const CONTRACT_CONFIG: DemoContractConfig = {
+  name: "SudokuVerifier",
+  verifierAbi: SUDOKU_VERIFIER_ABI,
+  verifierBytecode: SUDOKU_VERIFIER_BYTECODE as `0x${string}`,
+  appAbi: SUDOKU_APP_ABI,
+  appBytecode: SUDOKU_APP_BYTECODE as `0x${string}`,
+  verifierLabel: "Groth16Verifier",
+  appLabel: "SudokuVerifier",
+};
+
 export default function SudokuPage() {
   const t = useTranslations("demo.sudoku");
   const { address, isConnected } = useAccount();
@@ -99,35 +106,42 @@ export default function SudokuPage() {
   // Proof state
   const [proof, setProof] = useState<ProofData | null>(null);
   const [isGeneratingProof, setIsGeneratingProof] = useState(false);
-  const [proofError, setProofError] = useState<string | null>(null);
-  const [proofTime, setProofTime] = useState<number | null>(null);
+  const [progress, setProgress] = useState(0);
+  const [step, setStep] = useState("");
+  const [error, setError] = useState<string | null>(null);
 
   // On-chain state
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [txHash, setTxHash] = useState<string | null>(null);
-  const [isVerified, setIsVerified] = useState<boolean | null>(null);
-  const [onchainError, setOnchainError] = useState<string | null>(null);
+  const [isVerified, setIsVerified] = useState(false);
+  const [isRefreshing, setIsRefreshing] = useState(false);
 
-  // Progress tracking
-  const [currentStep, setCurrentStep] = useState(0);
+  // Stats
+  const [stats, setStats] = useState({ totalVerifications: 0 });
 
-  // Contract config for deployer
-  const contractConfig: DemoContractConfig = {
-    name: "SudokuVerifier",
-    verifierAbi: SUDOKU_VERIFIER_ABI,
-    verifierBytecode: SUDOKU_VERIFIER_BYTECODE as `0x${string}`,
-    appAbi: SUDOKU_APP_ABI,
-    appBytecode: SUDOKU_APP_BYTECODE as `0x${string}`,
-    verifierLabel: "Groth16Verifier",
-    appLabel: "SudokuVerifier",
+  // Timer
+  const [elapsedTime, setElapsedTime] = useState(0);
+  const timerRef = useRef<NodeJS.Timeout | null>(null);
+
+  useEffect(() => {
+    if (isGeneratingProof) {
+      setElapsedTime(0);
+      timerRef.current = setInterval(() => setElapsedTime((prev) => prev + 1), 1000);
+    } else {
+      if (timerRef.current) clearInterval(timerRef.current);
+    }
+    return () => {
+      if (timerRef.current) clearInterval(timerRef.current);
+    };
+  }, [isGeneratingProof]);
+
+  const formatTime = (seconds: number) => {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return mins > 0 ? `${mins}m ${secs}s` : `${secs}s`;
   };
 
-  const steps = [
-    { label: t("progress.deployContracts"), completed: !!appAddress },
-    { label: t("progress.solvePuzzle"), completed: isSolutionComplete() },
-    { label: t("progress.generateProof"), completed: !!proof },
-    { label: t("progress.submitProof"), completed: isVerified === true },
-  ];
+  const appContract = appAddress as `0x${string}` | null;
 
   // Check if solution is complete
   function isSolutionComplete(): boolean {
@@ -141,12 +155,49 @@ export default function SudokuPage() {
     return true;
   }
 
-  // Handle deployment complete
-  const handleDeployed = useCallback((verifier: string, app: string) => {
+  // Count filled cells
+  function countFilledCells(): number {
+    let count = 0;
+    for (let i = 0; i < 9; i++) {
+      for (let j = 0; j < 9; j++) {
+        if (userSolution[i][j] >= 1 && userSolution[i][j] <= 9) {
+          count++;
+        }
+      }
+    }
+    return count;
+  }
+
+  // Refresh contract state
+  const refreshContractState = useCallback(async () => {
+    if (!publicClient || !appContract) return;
+
+    setIsRefreshing(true);
+    try {
+      const total = await publicClient.readContract({
+        address: appContract,
+        abi: SUDOKU_APP_ABI,
+        functionName: "totalVerifications",
+      });
+      setStats({ totalVerifications: Number(total as bigint) });
+    } catch (err) {
+      // Contract may not have this function, ignore
+    } finally {
+      setIsRefreshing(false);
+    }
+  }, [publicClient, appContract]);
+
+  useEffect(() => {
+    if (appContract) {
+      refreshContractState();
+    }
+  }, [appContract, refreshContractState]);
+
+  // Handle deployment
+  const handleDeployed = (verifier: string, app: string) => {
     setVerifierAddress(verifier);
     setAppAddress(app);
-    setCurrentStep(1);
-  }, []);
+  };
 
   // Update cell value
   const updateCell = useCallback(
@@ -165,43 +216,50 @@ export default function SudokuPage() {
   // Auto-fill solution
   const autoFillSolution = useCallback(() => {
     setUserSolution(JSON.parse(JSON.stringify(selectedPuzzle.solution)));
-    setCurrentStep(1);
   }, [selectedPuzzle]);
 
   // Reset puzzle
   const resetPuzzle = useCallback(() => {
     setUserSolution(JSON.parse(JSON.stringify(selectedPuzzle.puzzle)));
     setProof(null);
-    setProofError(null);
     setTxHash(null);
-    setIsVerified(null);
-    setOnchainError(null);
-    setCurrentStep(appAddress ? 1 : 0);
-  }, [selectedPuzzle, appAddress]);
+    setIsVerified(false);
+    setError(null);
+    setProgress(0);
+    setStep("");
+  }, [selectedPuzzle]);
 
-  // Generate ZK proof
+  // Generate proof
   const generateProof = useCallback(async () => {
     if (!isSolutionComplete()) {
-      setProofError("Please complete the puzzle first");
+      setError("Please complete the puzzle first");
       return;
     }
 
     setIsGeneratingProof(true);
-    setProofError(null);
-    setProof(null);
-    const startTime = Date.now();
+    setError(null);
+    setProgress(0);
 
     try {
+      setStep(t("steps.checkingClues"));
+      setProgress(20);
+
       const input = {
         solution: userSolution,
         puzzle: selectedPuzzle.puzzle,
       };
+
+      setStep(t("steps.generatingProof"));
+      setProgress(50);
 
       const { proof: generatedProof, publicSignals } = await groth16.fullProve(
         input,
         SUDOKU_WASM_PATH,
         SUDOKU_ZKEY_PATH
       );
+
+      setStep(t("steps.verified") || "Complete");
+      setProgress(100);
 
       setProof({
         pA: [generatedProof.pi_a[0], generatedProof.pi_a[1]] as [string, string],
@@ -212,32 +270,21 @@ export default function SudokuPage() {
         pC: [generatedProof.pi_c[0], generatedProof.pi_c[1]] as [string, string],
         pubSignals: publicSignals,
       });
-      setProofTime(Date.now() - startTime);
-      setCurrentStep(2);
     } catch (err) {
-      console.error("Proof generation failed:", err);
-      setProofError(
-        err instanceof Error ? err.message : "Failed to generate proof"
-      );
+      setError(err instanceof Error ? err.message : "Failed to generate proof");
     } finally {
       setIsGeneratingProof(false);
     }
-  }, [userSolution, selectedPuzzle]);
+  }, [userSolution, selectedPuzzle, t]);
 
   // Submit proof on-chain
-  const submitProofOnChain = useCallback(async () => {
-    if (!proof || !walletClient || !publicClient || !appAddress) {
-      setOnchainError("Missing required data for on-chain submission");
-      return;
-    }
+  const submitProof = useCallback(async () => {
+    if (!walletClient || !publicClient || !appContract || !proof) return;
 
     setIsSubmitting(true);
-    setOnchainError(null);
-    setTxHash(null);
-    setIsVerified(null);
+    setError(null);
 
     try {
-      // Format proof for contract
       const pA: [bigint, bigint] = [BigInt(proof.pA[0]), BigInt(proof.pA[1])];
       const pB: [[bigint, bigint], [bigint, bigint]] = [
         [BigInt(proof.pB[0][0]), BigInt(proof.pB[0][1])],
@@ -245,7 +292,6 @@ export default function SudokuPage() {
       ];
       const pC: [bigint, bigint] = [BigInt(proof.pC[0]), BigInt(proof.pC[1])];
 
-      // Public signals: 81 puzzle cells + 1 solution commitment = 82 signals
       const pubSignals = proof.pubSignals.map((s) => BigInt(s)) as [
         bigint, bigint, bigint, bigint, bigint, bigint, bigint, bigint, bigint,
         bigint, bigint, bigint, bigint, bigint, bigint, bigint, bigint, bigint,
@@ -259,33 +305,33 @@ export default function SudokuPage() {
       ];
 
       const hash = await walletClient.writeContract({
-        address: appAddress as `0x${string}`,
+        address: appContract,
         abi: SUDOKU_APP_ABI,
         functionName: "verifySolution",
         args: [pA, pB, pC, pubSignals],
       });
 
+      await publicClient.waitForTransactionReceipt({ hash });
       setTxHash(hash);
-
-      const receipt = await publicClient.waitForTransactionReceipt({ hash });
-
-      if (receipt.status === "success") {
-        setIsVerified(true);
-        setCurrentStep(3);
-      } else {
-        setIsVerified(false);
-        setOnchainError("Transaction failed");
-      }
+      setIsVerified(true);
+      refreshContractState();
     } catch (err) {
-      console.error("On-chain submission failed:", err);
-      setOnchainError(
-        err instanceof Error ? err.message : "Failed to submit proof on-chain"
-      );
-      setIsVerified(false);
+      setError(err instanceof Error ? err.message : "Failed to submit proof");
     } finally {
       setIsSubmitting(false);
     }
-  }, [proof, walletClient, publicClient, appAddress]);
+  }, [walletClient, publicClient, appContract, proof, refreshContractState]);
+
+  const solutionComplete = isSolutionComplete();
+  const currentStep = !appAddress ? 0 : !solutionComplete ? 1 : !proof ? 2 : !isVerified ? 3 : 4;
+
+  const progressSteps = [
+    { step: 0, name: t("progress.deployContracts") },
+    { step: 1, name: t("progress.solvePuzzle") },
+    { step: 2, name: t("progress.generateProof") },
+    { step: 3, name: t("progress.submitProof") },
+    { step: 4, name: t("steps.verified") || "Complete" },
+  ];
 
   // Render Sudoku grid
   const renderGrid = () => {
@@ -299,10 +345,7 @@ export default function SudokuPage() {
               const borderBottom = row === 2 || row === 5 ? "border-b-2 border-border" : "";
 
               return (
-                <div
-                  key={col}
-                  className={`${borderRight} ${borderBottom}`}
-                >
+                <div key={col} className={`${borderRight} ${borderBottom}`}>
                   <Input
                     type="text"
                     inputMode="numeric"
@@ -310,9 +353,7 @@ export default function SudokuPage() {
                     onChange={(e) => updateCell(row, col, e.target.value)}
                     disabled={isClue}
                     className={`w-10 h-10 text-center p-0 text-lg font-medium ${
-                      isClue
-                        ? "bg-muted text-foreground font-bold"
-                        : "bg-background"
+                      isClue ? "bg-muted text-foreground font-bold" : "bg-background"
                     }`}
                     maxLength={1}
                   />
@@ -336,237 +377,249 @@ export default function SudokuPage() {
         <p className="text-muted-foreground text-lg">{t("description")}</p>
       </div>
 
-      {/* Wallet Connection */}
-      <Card className="mb-6">
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Wallet className="h-5 w-5" />
-            {t("walletConnection")}
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="lg:col-span-2 space-y-6">
           <Alert>
-            <AlertTriangle className="h-4 w-4" />
+            <Info className="h-4 w-4" />
             <AlertTitle>{t("realBlockchainAlert.title")}</AlertTitle>
             <AlertDescription>
-              {t("realBlockchainAlert.description")}
+              {t("realBlockchainAlert.description")} <FaucetLink />.
             </AlertDescription>
           </Alert>
-          <div className="flex items-center justify-between flex-wrap gap-4">
-            <ConnectButton />
-            {isConnected && (
-              <div className="flex items-center gap-4">
-                <WalletBalance />
-                <FaucetLink />
-              </div>
-            )}
-          </div>
-        </CardContent>
-      </Card>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Main Content */}
-        <div className="lg:col-span-2 space-y-6">
-          {/* Contract Deployment */}
-          <GenericContractDeployer
-            config={contractConfig}
-            onDeployed={handleDeployed}
-            isDeployed={!!appAddress}
-            verifierAddress={verifierAddress}
-            appAddress={appAddress}
-          />
+          {/* Wallet Connection */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Wallet className="h-5 w-5" />
+                {t("walletConnection")}
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <ConnectButton chainStatus="icon" showBalance={false} />
+              {isConnected && <WalletBalance />}
+            </CardContent>
+          </Card>
 
-          {appAddress && (
-            <>
-              {/* Step 1: Solve Puzzle */}
+          <Tabs defaultValue="demo" className="space-y-4">
+            <TabsList className="grid w-full grid-cols-2">
+              <TabsTrigger value="demo">{t("tabs.demo") || "Demo"}</TabsTrigger>
+              <TabsTrigger value="how">{t("tabs.howItWorks") || "How It Works"}</TabsTrigger>
+            </TabsList>
+
+            <TabsContent value="demo" className="space-y-4">
+              {/* Contract Deployment */}
+              <GenericContractDeployer
+                config={CONTRACT_CONFIG}
+                onDeployed={handleDeployed}
+                isDeployed={!!appAddress}
+                verifierAddress={verifierAddress}
+                appAddress={appAddress}
+              />
+
+              {appAddress && (
+                <>
+                  {/* Step 1: Solve Puzzle */}
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="flex items-center gap-2">
+                        <Grid3X3 className="h-5 w-5" />
+                        {t("step1.title")}
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                      {renderGrid()}
+
+                      <div className="flex justify-center gap-4">
+                        <Button onClick={autoFillSolution} variant="outline">
+                          <Sparkles className="mr-2 h-4 w-4" />
+                          {t("step1.autoFill")}
+                        </Button>
+                        <Button onClick={resetPuzzle} variant="outline">
+                          <RefreshCw className="mr-2 h-4 w-4" />
+                          {t("step1.reset")}
+                        </Button>
+                      </div>
+
+                      {solutionComplete && (
+                        <Alert className="border-green-500">
+                          <CheckCircle2 className="h-4 w-4 text-green-500" />
+                          <AlertTitle>{t("step1.complete")}</AlertTitle>
+                          <AlertDescription>{t("step1.completeDesc")}</AlertDescription>
+                        </Alert>
+                      )}
+                    </CardContent>
+                  </Card>
+
+                  {/* Step 2: Generate Proof */}
+                  {solutionComplete && (
+                    <Card>
+                      <CardHeader>
+                        <CardTitle className="flex items-center gap-2">
+                          <Shield className="h-5 w-5" />
+                          {t("step2.title")}
+                        </CardTitle>
+                      </CardHeader>
+                      <CardContent className="space-y-4">
+                        <AnimatePresence mode="wait">
+                          {isGeneratingProof ? (
+                            <motion.div
+                              key="generating"
+                              initial={{ opacity: 0 }}
+                              animate={{ opacity: 1 }}
+                              exit={{ opacity: 0 }}
+                              className="space-y-3"
+                            >
+                              <div className="text-sm font-medium">{step}</div>
+                              <Progress value={progress} className="h-2" />
+                              <div className="flex items-center justify-between text-xs text-muted-foreground">
+                                <span>{t("steps.generatingProof")}</span>
+                                <span className="flex items-center gap-1">
+                                  <Clock className="h-3 w-3" />
+                                  {formatTime(elapsedTime)}
+                                </span>
+                              </div>
+                            </motion.div>
+                          ) : proof ? (
+                            <motion.div
+                              key="complete"
+                              initial={{ opacity: 0, scale: 0.95 }}
+                              animate={{ opacity: 1, scale: 1 }}
+                              className="space-y-3"
+                            >
+                              <div className="flex items-center gap-2 text-green-600 dark:text-green-400">
+                                <CheckCircle2 className="h-5 w-5" />
+                                <span className="font-medium">{t("proofGenerated")}</span>
+                              </div>
+                              <p className="text-sm text-muted-foreground">{t("proofReadyToSubmit")}</p>
+                            </motion.div>
+                          ) : (
+                            <Button onClick={generateProof} className="w-full">
+                              <Shield className="h-4 w-4 mr-2" />
+                              {t("generateProofButton")}
+                            </Button>
+                          )}
+                        </AnimatePresence>
+                      </CardContent>
+                    </Card>
+                  )}
+
+                  {/* Step 3: Submit On-Chain */}
+                  {proof && (
+                    <Card>
+                      <CardHeader>
+                        <CardTitle className="flex items-center gap-2">
+                          <Lock className="h-5 w-5" />
+                          {t("onchain.title")}
+                        </CardTitle>
+                      </CardHeader>
+                      <CardContent className="space-y-4">
+                        {isVerified ? (
+                          <div className="space-y-4">
+                            <div className="flex items-center gap-2 text-green-600 dark:text-green-400">
+                              <CheckCircle2 className="h-5 w-5" />
+                              <span className="font-medium">{t("onchain.verified")}</span>
+                            </div>
+                            <p className="text-sm text-muted-foreground">{t("onchain.verifiedDesc")}</p>
+                            {txHash && (
+                              <a
+                                href={`https://sepolia.basescan.org/tx/${txHash}`}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                              >
+                                <Button variant="outline" size="sm" className="w-full">
+                                  <ExternalLink className="h-4 w-4 mr-2" />
+                                  {t("onchain.viewTransaction")}
+                                </Button>
+                              </a>
+                            )}
+                            <Button onClick={resetPuzzle} variant="secondary" className="w-full">
+                              {t("step1.reset") || "Try Again"}
+                            </Button>
+                          </div>
+                        ) : (
+                          <Button onClick={submitProof} disabled={isSubmitting} className="w-full">
+                            {isSubmitting ? (
+                              <>
+                                <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                                {t("onchain.submitting")}
+                              </>
+                            ) : (
+                              <>
+                                <Lock className="h-4 w-4 mr-2" />
+                                {t("onchain.submitButton")}
+                              </>
+                            )}
+                          </Button>
+                        )}
+                      </CardContent>
+                    </Card>
+                  )}
+                </>
+              )}
+
+              {error && (
+                <Alert variant="destructive">
+                  <AlertTitle>{t("result.failed")}</AlertTitle>
+                  <AlertDescription>{error}</AlertDescription>
+                </Alert>
+              )}
+            </TabsContent>
+
+            <TabsContent value="how" className="space-y-4">
               <Card>
                 <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <Grid3X3 className="h-5 w-5" />
-                    {t("step1.title")}
-                  </CardTitle>
-                  <CardDescription>{t("step1.description")}</CardDescription>
+                  <CardTitle>{t("howItWorks.title")}</CardTitle>
                 </CardHeader>
-                <CardContent className="space-y-4">
-                  {renderGrid()}
-
-                  <div className="flex justify-center gap-4">
-                    <Button onClick={autoFillSolution} variant="outline">
-                      {t("step1.autoFill")}
-                    </Button>
-                    <Button onClick={resetPuzzle} variant="outline">
-                      <RefreshCw className="mr-2 h-4 w-4" />
-                      {t("step1.reset")}
-                    </Button>
+                <CardContent className="space-y-6">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="space-y-4">
+                      <h4 className="font-semibold">{t("privacy.title")}</h4>
+                      <p className="text-sm text-muted-foreground">{t("privacy.description")}</p>
+                    </div>
+                    <div className="space-y-4">
+                      <h4 className="font-semibold">{t("howItWorks.step1.title")}</h4>
+                      <p className="text-sm text-muted-foreground">{t("howItWorks.step1.description")}</p>
+                      <h4 className="font-semibold">{t("howItWorks.step2.title")}</h4>
+                      <p className="text-sm text-muted-foreground">{t("howItWorks.step2.description")}</p>
+                      <h4 className="font-semibold">{t("howItWorks.step3.title")}</h4>
+                      <p className="text-sm text-muted-foreground">{t("howItWorks.step3.description")}</p>
+                    </div>
                   </div>
-
-                  {isSolutionComplete() && (
-                    <Alert className="border-green-500">
-                      <CheckCircle2 className="h-4 w-4 text-green-500" />
-                      <AlertTitle>{t("step1.complete")}</AlertTitle>
-                      <AlertDescription>
-                        {t("step1.completeDesc")}
-                      </AlertDescription>
-                    </Alert>
-                  )}
+                  <div className="flex flex-wrap gap-2">
+                    <Badge variant="outline">{t("privacy.tags.zeroKnowledge")}</Badge>
+                    <Badge variant="outline">{t("privacy.tags.solutionHidden")}</Badge>
+                    <Badge variant="outline">{t("privacy.tags.validityProven")}</Badge>
+                  </div>
                 </CardContent>
               </Card>
-
-              {/* Step 2: Generate Proof */}
-              {isSolutionComplete() && (
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                      <FileCheck className="h-5 w-5" />
-                      {t("step2.title")}
-                    </CardTitle>
-                    <CardDescription>{t("step2.description")}</CardDescription>
-                  </CardHeader>
-                  <CardContent className="space-y-4">
-                    <Button
-                      onClick={generateProof}
-                      disabled={isGeneratingProof}
-                      className="w-full"
-                    >
-                      {isGeneratingProof ? (
-                        <>
-                          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                          {t("steps.generatingProof")}
-                        </>
-                      ) : (
-                        t("generateProofButton")
-                      )}
-                    </Button>
-
-                    {proofError && (
-                      <Alert variant="destructive">
-                        <XCircle className="h-4 w-4" />
-                        <AlertTitle>{t("result.failed")}</AlertTitle>
-                        <AlertDescription>{proofError}</AlertDescription>
-                      </Alert>
-                    )}
-
-                    {proof && (
-                      <Alert className="border-green-500">
-                        <CheckCircle2 className="h-4 w-4 text-green-500" />
-                        <AlertTitle>{t("proofGenerated")}</AlertTitle>
-                        <AlertDescription>
-                          {t("proofReadyToSubmit")}
-                          {proofTime && (
-                            <span className="ml-2 text-muted-foreground">
-                              ({t("result.proofTime")}: {proofTime}ms)
-                            </span>
-                          )}
-                        </AlertDescription>
-                      </Alert>
-                    )}
-                  </CardContent>
-                </Card>
-              )}
-
-              {/* Step 3: Submit On-Chain */}
-              {proof && (
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                      <ShieldCheck className="h-5 w-5" />
-                      {t("onchain.title")}
-                    </CardTitle>
-                    <CardDescription>{t("onchain.description")}</CardDescription>
-                  </CardHeader>
-                  <CardContent className="space-y-4">
-                    <Button
-                      onClick={submitProofOnChain}
-                      disabled={isSubmitting || isVerified === true}
-                      className="w-full"
-                    >
-                      {isSubmitting ? (
-                        <>
-                          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                          {txHash
-                            ? t("onchain.waiting")
-                            : t("onchain.submitting")}
-                        </>
-                      ) : isVerified === true ? (
-                        <>
-                          <CheckCircle2 className="mr-2 h-4 w-4" />
-                          {t("onchain.verified")}
-                        </>
-                      ) : (
-                        t("onchain.submitButton")
-                      )}
-                    </Button>
-
-                    {onchainError && (
-                      <Alert variant="destructive">
-                        <XCircle className="h-4 w-4" />
-                        <AlertTitle>{t("onchain.failed")}</AlertTitle>
-                        <AlertDescription>{onchainError}</AlertDescription>
-                      </Alert>
-                    )}
-
-                    {isVerified === true && txHash && (
-                      <Alert className="border-green-500 bg-green-50 dark:bg-green-950">
-                        <CheckCircle2 className="h-4 w-4 text-green-500" />
-                        <AlertTitle>{t("onchain.verified")}</AlertTitle>
-                        <AlertDescription className="space-y-2">
-                          <p>{t("onchain.verifiedDesc")}</p>
-                          <a
-                            href={`https://sepolia.basescan.org/tx/${txHash}`}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="inline-flex items-center text-primary hover:underline"
-                          >
-                            {t("onchain.viewTransaction")}
-                            <ExternalLink className="ml-1 h-3 w-3" />
-                          </a>
-                        </AlertDescription>
-                      </Alert>
-                    )}
-                  </CardContent>
-                </Card>
-              )}
-            </>
-          )}
+            </TabsContent>
+          </Tabs>
         </div>
 
         {/* Sidebar */}
         <div className="space-y-6">
-          {/* Progress Tracker */}
           <Card>
             <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Clock className="h-5 w-5" />
-                {t("progress.title")}
-              </CardTitle>
+              <CardTitle className="text-lg">{t("progress.title")}</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="space-y-3">
-                {steps.map((step, index) => (
-                  <div key={index} className="flex items-center gap-3">
+              <div className="space-y-4">
+                {progressSteps.map((item) => (
+                  <div key={item.step} className="flex items-center gap-3">
                     <div
-                      className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-medium ${
-                        step.completed
+                      className={`h-8 w-8 rounded-full flex items-center justify-center text-sm font-bold ${
+                        currentStep > item.step
                           ? "bg-green-500 text-white"
-                          : index === currentStep
+                          : currentStep === item.step
                           ? "bg-primary text-primary-foreground"
                           : "bg-muted text-muted-foreground"
                       }`}
                     >
-                      {step.completed ? (
-                        <CheckCircle2 className="h-4 w-4" />
-                      ) : (
-                        index + 1
-                      )}
+                      {currentStep > item.step ? <CheckCircle2 className="h-4 w-4" /> : item.step}
                     </div>
-                    <span
-                      className={
-                        step.completed
-                          ? "text-green-600 dark:text-green-400"
-                          : ""
-                      }
-                    >
-                      {step.label}
+                    <span className={currentStep >= item.step ? "font-medium" : "text-muted-foreground"}>
+                      {item.name}
                     </span>
                   </div>
                 ))}
@@ -574,103 +627,68 @@ export default function SudokuPage() {
             </CardContent>
           </Card>
 
-          {/* Contract Info */}
-          {appAddress && (
-            <Card>
-              <CardHeader>
-                <CardTitle>{t("contractInfo.title")}</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-3 text-sm">
-                <div>
-                  <p className="text-muted-foreground">
-                    {t("contractInfo.network")}
-                  </p>
-                  <p className="font-medium">Base Sepolia</p>
-                </div>
-                <div>
-                  <p className="text-muted-foreground">
-                    {t("contractInfo.verifier")}
-                  </p>
-                  <code className="text-xs break-all">{verifierAddress}</code>
-                </div>
-                <div>
-                  <p className="text-muted-foreground">
-                    {t("contractInfo.appContract")}
-                  </p>
-                  <code className="text-xs break-all">{appAddress}</code>
-                </div>
-                <div>
-                  <p className="text-muted-foreground">
-                    {t("contractInfo.owner")}
-                  </p>
-                  <code className="text-xs break-all">{address}</code>
-                </div>
-              </CardContent>
-            </Card>
-          )}
-
-          {/* How It Works */}
           <Card>
             <CardHeader>
-              <CardTitle>{t("howItWorks.title")}</CardTitle>
+              <CardTitle className="flex items-center justify-between text-lg">
+                <span>{t("stats.title") || "Stats"}</span>
+                <Button variant="ghost" size="sm" onClick={refreshContractState} disabled={!appAddress || isRefreshing}>
+                  <RefreshCw className={`h-4 w-4 ${isRefreshing ? "animate-spin" : ""}`} />
+                </Button>
+              </CardTitle>
             </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="flex gap-3">
-                <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
-                  <Grid3X3 className="h-4 w-4 text-primary" />
-                </div>
-                <div>
-                  <p className="font-medium">{t("howItWorks.step1.title")}</p>
-                  <p className="text-sm text-muted-foreground">
-                    {t("howItWorks.step1.description")}
-                  </p>
-                </div>
+            <CardContent className="space-y-3 text-sm">
+              <div className="flex items-center justify-between">
+                <span className="text-muted-foreground">{t("stats.totalVerifications") || "Total Verifications"}</span>
+                <Badge variant="secondary">{stats.totalVerifications}</Badge>
               </div>
-              <div className="flex gap-3">
-                <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
-                  <FileCheck className="h-4 w-4 text-primary" />
-                </div>
-                <div>
-                  <p className="font-medium">{t("howItWorks.step2.title")}</p>
-                  <p className="text-sm text-muted-foreground">
-                    {t("howItWorks.step2.description")}
-                  </p>
-                </div>
+              <div className="flex items-center justify-between">
+                <span className="text-muted-foreground">{t("stats.cellsFilled") || "Cells Filled"}</span>
+                <Badge variant="secondary">{countFilledCells()}/81</Badge>
               </div>
-              <div className="flex gap-3">
-                <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
-                  <ShieldCheck className="h-4 w-4 text-primary" />
-                </div>
-                <div>
-                  <p className="font-medium">{t("howItWorks.step3.title")}</p>
-                  <p className="text-sm text-muted-foreground">
-                    {t("howItWorks.step3.description")}
-                  </p>
-                </div>
+              <div className="flex items-center justify-between">
+                <span className="text-muted-foreground">{t("stats.puzzleComplete") || "Puzzle Complete"}</span>
+                <Badge variant={solutionComplete ? "default" : "secondary"}>{solutionComplete ? "Yes" : "No"}</Badge>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-muted-foreground">{t("stats.proofGenerated") || "Proof Generated"}</span>
+                <Badge variant={proof ? "default" : "secondary"}>{proof ? "Yes" : "No"}</Badge>
               </div>
             </CardContent>
           </Card>
 
-          {/* Privacy Guarantee */}
           <Card>
             <CardHeader>
-              <CardTitle>{t("privacy.title")}</CardTitle>
+              <CardTitle className="text-lg">{t("contractInfo.title")}</CardTitle>
             </CardHeader>
-            <CardContent>
-              <p className="text-sm text-muted-foreground mb-3">
-                {t("privacy.description")}
-              </p>
-              <div className="flex flex-wrap gap-2">
-                <Badge variant="outline">
-                  {t("privacy.tags.zeroKnowledge")}
-                </Badge>
-                <Badge variant="outline">
-                  {t("privacy.tags.solutionHidden")}
-                </Badge>
-                <Badge variant="outline">
-                  {t("privacy.tags.validityProven")}
-                </Badge>
+            <CardContent className="space-y-3 text-sm">
+              <div>
+                <span className="text-muted-foreground">{t("contractInfo.network")}:</span>
+                <Badge variant="outline" className="ml-2">Base Sepolia</Badge>
               </div>
+              <div>
+                <span className="text-muted-foreground">{t("contractInfo.verifier")}:</span>
+                <div className="font-mono text-xs mt-1 break-all">
+                  {verifierAddress || "Not deployed"}
+                </div>
+              </div>
+              <div>
+                <span className="text-muted-foreground">{t("contractInfo.appContract")}:</span>
+                <div className="font-mono text-xs mt-1 break-all">
+                  {appAddress || "Not deployed"}
+                </div>
+              </div>
+              {appAddress && (
+                <a
+                  href={`https://sepolia.basescan.org/address/${appAddress}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <Button variant="outline" size="sm" className="w-full mt-2">
+                    <ExternalLink className="h-4 w-4 mr-2" />
+                    View on Basescan
+                  </Button>
+                </a>
+              )}
             </CardContent>
           </Card>
         </div>
