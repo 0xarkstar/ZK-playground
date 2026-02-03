@@ -380,7 +380,41 @@
           "poseidonHash": "Poseidon Hash",
           "noSecretLeaked": "No Secret Leaked"
         }
-      }
+      },
+      "walletConnection": "Connect your wallet to deploy contracts and submit proofs on-chain",
+      "realBlockchainAlert": {
+        "title": "Real Blockchain Transaction",
+        "description": "This demo uses Base Sepolia testnet. You'll need testnet ETH to deploy contracts and submit proofs."
+      },
+      "progress": {
+        "title": "Progress",
+        "deployContracts": "Deploy Contracts",
+        "computeHash": "Compute Hash",
+        "generateProof": "Generate ZK Proof",
+        "submitProof": "Submit Proof On-Chain"
+      },
+      "contractInfo": {
+        "title": "Contract Info",
+        "network": "Network",
+        "verifier": "Verifier",
+        "appContract": "App Contract",
+        "owner": "Owner"
+      },
+      "onchain": {
+        "title": "On-Chain Verification",
+        "description": "Submit your proof to the blockchain for permanent, verifiable record",
+        "submitting": "Submitting proof to blockchain...",
+        "waiting": "Waiting for confirmation...",
+        "verified": "Proof Verified On-Chain!",
+        "verifiedDesc": "Your proof has been permanently recorded on the blockchain.",
+        "failed": "On-chain verification failed",
+        "viewTransaction": "View Transaction",
+        "submitButton": "Submit Proof On-Chain"
+      },
+      "generateProofButton": "Generate ZK Proof",
+      "proofGenerated": "Proof Generated!",
+      "proofReadyToSubmit": "Your ZK proof is ready. Submit it on-chain for permanent verification.",
+      "proofDescription": "The proof demonstrates you know the preimage without revealing it."
     },
     "ageVerification": {
       "badge": "Beginner Demo",
@@ -391,19 +425,28 @@
         "description": "Prove you meet an age requirement (e.g., 18+) without revealing your exact age or birthdate. Perfect for age-gated content and services."
       },
       "step1": {
-        "title": "Your Identity",
+        "title": "Enter Your Birthdate",
+        "description": "Your birthdate is hashed locally - never sent to any server",
         "birthdateLabel": "Birth Date",
         "hiddenBirthdate": "Birthdate hidden for privacy",
-        "year": "Year",
-        "month": "Month",
-        "day": "Day",
-        "calculatedAge": "Your age",
+        "yearLabel": "Year",
+        "monthLabel": "Month",
+        "dayLabel": "Day",
+        "calculatedAge": "Your calculated age is {age} years",
         "years": "years",
         "generateButton": "Generate Identity Commitment",
-        "commitmentCreated": "Identity commitment created"
+        "commitmentCreated": "Identity commitment created",
+        "thresholdLabel": "Age Threshold",
+        "thresholdHint": "The minimum age you want to prove (e.g., 18 for adult verification)",
+        "eligible": "Eligible",
+        "notEligible": "Not Eligible",
+        "meetsThreshold": "- meets the threshold of {threshold}",
+        "belowThreshold": "- below the threshold of {threshold}",
+        "identityCommitment": "Identity Commitment"
       },
       "step2": {
-        "title": "Verify Age Requirement",
+        "title": "Generate ZK Proof",
+        "description": "Create a zero-knowledge proof that your age meets the threshold",
         "thresholdLabel": "Minimum Age Required",
         "verifyButton": "Prove Age Meets Requirement"
       },
@@ -459,6 +502,67 @@
             "title": "Insurance",
             "description": "Age-based eligibility"
           }
+        }
+      },
+      "walletConnection": "Connect your wallet to deploy contracts and verify age on-chain",
+      "realBlockchainAlert": {
+        "title": "Real Blockchain Transaction",
+        "description": "This demo uses Base Sepolia testnet. You'll need testnet ETH to deploy contracts and submit proofs."
+      },
+      "deploy": {
+        "title": "Deploy Contracts",
+        "description": "Deploy the Age Verifier contracts to Base Sepolia"
+      },
+      "progress": {
+        "title": "Progress",
+        "deployContracts": "Deploy Contracts",
+        "enterBirthdate": "Enter Birthdate",
+        "generateProof": "Generate ZK Proof",
+        "submitProof": "Submit Proof On-Chain"
+      },
+      "contractInfo": {
+        "title": "Contract Info",
+        "network": "Network",
+        "verifier": "Verifier",
+        "appContract": "App Contract",
+        "owner": "Owner"
+      },
+      "onchain": {
+        "title": "On-Chain Verification",
+        "description": "Submit your age proof to the blockchain for permanent verification",
+        "submitting": "Submitting proof to blockchain...",
+        "waiting": "Waiting for confirmation...",
+        "verified": "Age Verified On-Chain!",
+        "verifiedDesc": "Your age proof has been permanently recorded on the blockchain.",
+        "failed": "On-chain verification failed",
+        "viewTransaction": "View Transaction",
+        "submitButton": "Submit Age Proof On-Chain"
+      },
+      "generateProofButton": "Generate ZK Proof",
+      "proofGenerated": "Proof Generated!",
+      "proofReadyToSubmit": "Your age proof is ready. Submit it on-chain for permanent verification.",
+      "howItWorks": {
+        "title": "How It Works",
+        "step1": {
+          "title": "Enter Birthdate",
+          "description": "Your birthdate is hashed locally to create an identity commitment."
+        },
+        "step2": {
+          "title": "Generate Proof",
+          "description": "A ZK proof is created showing your age meets the threshold."
+        },
+        "step3": {
+          "title": "Verify On-Chain",
+          "description": "The proof is verified on-chain without revealing your exact age."
+        }
+      },
+      "privacy": {
+        "title": "Privacy Guarantee",
+        "description": "The verifier only learns that your age meets the threshold. They cannot determine your exact age or birthdate.",
+        "tags": {
+          "zeroKnowledge": "Zero-Knowledge",
+          "rangeProof": "Range Proof",
+          "noAgeRevealed": "No Age Revealed"
         }
       }
     },
@@ -541,6 +645,79 @@
             "description": "ZK-friendly hash function for efficient proofs"
           }
         }
+      },
+      "walletConnection": "Connect your wallet to deploy contracts and verify passwords on-chain",
+      "realBlockchainAlert": {
+        "title": "Real Blockchain Transaction",
+        "description": "This demo uses Base Sepolia testnet. You'll need testnet ETH to deploy contracts and submit proofs."
+      },
+      "step1": {
+        "title": "Enter Your Password",
+        "description": "Your password is hashed locally with a random salt - never sent anywhere",
+        "passwordLabel": "Password",
+        "passwordPlaceholder": "Enter your password...",
+        "passwordHint": "This password will never be transmitted over the network",
+        "computeButton": "Compute Password Hash",
+        "hashResult": "Password Hash",
+        "saltResult": "Salt",
+        "securityNote": "Only the hash and salt are used. Your password is never stored or transmitted."
+      },
+      "step2": {
+        "title": "Generate ZK Proof",
+        "description": "Create a proof that you know the password matching the hash"
+      },
+      "progress": {
+        "title": "Progress",
+        "deployContracts": "Deploy Contracts",
+        "enterPassword": "Enter Password",
+        "generateProof": "Generate ZK Proof",
+        "submitProof": "Submit Proof On-Chain"
+      },
+      "contractInfo": {
+        "title": "Contract Info",
+        "network": "Network",
+        "verifier": "Verifier",
+        "appContract": "App Contract",
+        "owner": "Owner"
+      },
+      "onchain": {
+        "title": "On-Chain Verification",
+        "description": "Submit your password proof to the blockchain for verification",
+        "submitting": "Submitting proof to blockchain...",
+        "waiting": "Waiting for confirmation...",
+        "verified": "Password Verified On-Chain!",
+        "verifiedDesc": "Your password proof has been verified on the blockchain.",
+        "failed": "On-chain verification failed",
+        "viewTransaction": "View Transaction",
+        "submitButton": "Submit Password Proof On-Chain"
+      },
+      "generateProofButton": "Generate ZK Proof",
+      "proofGenerated": "Proof Generated!",
+      "proofReadyToSubmit": "Your password proof is ready. Submit it on-chain for verification.",
+      "resetButton": "Try Another Password",
+      "howItWorks": {
+        "title": "How It Works",
+        "step1": {
+          "title": "Hash Your Password",
+          "description": "Password is hashed locally with a random salt using Poseidon."
+        },
+        "step2": {
+          "title": "Generate Proof",
+          "description": "A ZK proof is created showing you know the password."
+        },
+        "step3": {
+          "title": "Verify On-Chain",
+          "description": "The proof is verified on-chain without ever transmitting the password."
+        }
+      },
+      "privacy": {
+        "title": "Privacy Guarantee",
+        "description": "Your password never leaves your device. The verifier only learns that you know a password that hashes to the stored value.",
+        "tags": {
+          "zeroKnowledge": "Zero-Knowledge",
+          "passwordNeverSent": "Password Never Sent",
+          "saltedHash": "Salted Hash"
+        }
       }
     },
     "sudoku": {
@@ -597,6 +774,82 @@
         "education": {
           "title": "Education",
           "description": "Demonstrate skill without cheating"
+        }
+      },
+      "walletConnection": "Connect your wallet to deploy contracts and verify Sudoku solutions on-chain",
+      "realBlockchainAlert": {
+        "title": "Real Blockchain Transaction",
+        "description": "This demo uses Base Sepolia testnet. You'll need testnet ETH to deploy contracts and submit proofs."
+      },
+      "step1": {
+        "title": "Solve the Puzzle",
+        "description": "Fill in the empty cells to complete the Sudoku puzzle",
+        "autoFill": "Auto-fill Solution",
+        "reset": "Reset Puzzle",
+        "complete": "Puzzle Complete!",
+        "completeDesc": "All cells are filled. Ready to generate proof."
+      },
+      "step2": {
+        "title": "Generate ZK Proof",
+        "description": "Create a proof that your solution is valid without revealing it"
+      },
+      "progress": {
+        "title": "Progress",
+        "deployContracts": "Deploy Contracts",
+        "solvePuzzle": "Solve Puzzle",
+        "generateProof": "Generate ZK Proof",
+        "submitProof": "Submit Proof On-Chain"
+      },
+      "contractInfo": {
+        "title": "Contract Info",
+        "network": "Network",
+        "verifier": "Verifier",
+        "appContract": "App Contract",
+        "owner": "Owner"
+      },
+      "onchain": {
+        "title": "On-Chain Verification",
+        "description": "Submit your Sudoku proof to the blockchain for permanent verification",
+        "submitting": "Submitting proof to blockchain...",
+        "waiting": "Waiting for confirmation...",
+        "verified": "Solution Verified On-Chain!",
+        "verifiedDesc": "Your Sudoku solution proof has been permanently recorded on the blockchain.",
+        "failed": "On-chain verification failed",
+        "viewTransaction": "View Transaction",
+        "submitButton": "Submit Sudoku Proof On-Chain"
+      },
+      "generateProofButton": "Generate ZK Proof",
+      "proofGenerated": "Proof Generated!",
+      "proofReadyToSubmit": "Your Sudoku proof is ready. Submit it on-chain for verification.",
+      "result": {
+        "verified": "Valid Solution!",
+        "failed": "Invalid Solution",
+        "verifiedDesc": "Proven: You know a valid solution without revealing it.",
+        "failedDesc": "The solution does not satisfy all Sudoku constraints.",
+        "proofTime": "Proof time"
+      },
+      "howItWorks": {
+        "title": "How It Works",
+        "step1": {
+          "title": "Solve the Puzzle",
+          "description": "Fill in the empty cells with numbers 1-9 following Sudoku rules."
+        },
+        "step2": {
+          "title": "Generate Proof",
+          "description": "A ZK proof is created verifying your solution is valid."
+        },
+        "step3": {
+          "title": "Verify On-Chain",
+          "description": "The proof is verified on-chain without revealing your solution."
+        }
+      },
+      "privacy": {
+        "title": "Privacy Guarantee",
+        "description": "The verifier only learns that you know a valid solution. Your actual solution values are never revealed.",
+        "tags": {
+          "zeroKnowledge": "Zero-Knowledge",
+          "solutionHidden": "Solution Hidden",
+          "validityProven": "Validity Proven"
         }
       }
     },
@@ -844,6 +1097,84 @@
         "licensing": {
           "title": "Professional Licensing",
           "description": "Prove certifications privately"
+        }
+      },
+      "walletConnection": "Connect your wallet to deploy contracts and verify credentials on-chain",
+      "realBlockchainAlert": {
+        "title": "Real Blockchain Transaction",
+        "description": "This demo uses Base Sepolia testnet. You'll need testnet ETH to deploy contracts and submit proofs."
+      },
+      "step1": {
+        "title": "Setup Credential",
+        "description": "Configure your credential type and minimum qualification level to prove",
+        "typeLabel": "Credential Type",
+        "minLevelLabel": "Minimum Qualification Level",
+        "minLevelHint": "The minimum level you want to prove (e.g., 1=Associate, 2=Bachelor, 3=Master, 4=PhD)",
+        "setupButton": "Setup Credential",
+        "credentialHash": "Credential Hash",
+        "issuerKey": "Issuer Public Key"
+      },
+      "step2": {
+        "title": "Generate ZK Proof",
+        "description": "Create a proof that you hold a valid credential meeting the requirements"
+      },
+      "progress": {
+        "title": "Progress",
+        "deployContracts": "Deploy Contracts",
+        "setupCredential": "Setup Credential",
+        "generateProof": "Generate ZK Proof",
+        "submitProof": "Submit Proof On-Chain"
+      },
+      "contractInfo": {
+        "title": "Contract Info",
+        "network": "Network",
+        "verifier": "Verifier",
+        "appContract": "App Contract",
+        "owner": "Owner"
+      },
+      "onchain": {
+        "title": "On-Chain Verification",
+        "description": "Submit your credential proof to the blockchain for verification",
+        "submitting": "Submitting proof to blockchain...",
+        "waiting": "Waiting for confirmation...",
+        "verified": "Credential Verified On-Chain!",
+        "verifiedDesc": "Your credential proof has been permanently recorded on the blockchain.",
+        "failed": "On-chain verification failed",
+        "viewTransaction": "View Transaction",
+        "submitButton": "Submit Credential Proof On-Chain"
+      },
+      "generateProofButton": "Generate ZK Proof",
+      "proofGenerated": "Proof Generated!",
+      "proofReadyToSubmit": "Your credential proof is ready. Submit it on-chain for verification.",
+      "result": {
+        "verified": "Credential Verified!",
+        "failed": "Verification Failed",
+        "verifiedDesc": "Proven: You hold a valid credential meeting the requirements.",
+        "failedDesc": "Could not prove credential meets minimum level.",
+        "proofTime": "Proof time"
+      },
+      "howItWorks": {
+        "title": "How It Works",
+        "step1": {
+          "title": "Setup Credential",
+          "description": "Configure your credential type and the minimum qualification level."
+        },
+        "step2": {
+          "title": "Generate Proof",
+          "description": "A ZK proof is created verifying your credential meets requirements."
+        },
+        "step3": {
+          "title": "Verify On-Chain",
+          "description": "The proof is verified on-chain without revealing your identity."
+        }
+      },
+      "privacy": {
+        "title": "Privacy Guarantee",
+        "description": "The verifier only learns that you hold a valid credential meeting the requirements. Your identity and credential details remain private.",
+        "tags": {
+          "zeroKnowledge": "Zero-Knowledge",
+          "identityHidden": "Identity Hidden",
+          "qualificationProven": "Qualification Proven"
         }
       }
     },
